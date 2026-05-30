@@ -366,7 +366,7 @@ function residentStoryHtml(name){
     <span>${fullFmt(picked).toUpperCase()}</span>
     <div class="selected-status">
       <strong class="parking-status-label">${centralLabel}</strong>
-      <span class="parking-number-circle">${centralNumber}</span>
+      <span class="parking-number-circle" ${pickedStatus.info.type ? `data-open-current-spot="${centralNumber}"` : ''}>${centralNumber}</span>
     </div>
   </div>
 
@@ -435,7 +435,7 @@ function openMapPopup(targetId, spot, keepHighlight=false){
   map.querySelectorAll('.real-spot').forEach(btn=>btn.classList.remove('selected','highlight'));
   if(alreadyOpen){
     if(keepHighlight) button.classList.add('highlight');
-    popup.classList.remove('open','below','left-edge','right-edge','spot-top-left');
+    popup.classList.remove('open','below','left-edge','right-edge','spot-top-left','left-side');
     popup.innerHTML = '';
     return;
   }
@@ -445,15 +445,14 @@ function openMapPopup(targetId, spot, keepHighlight=false){
   const o = occupantLabel(spot);
   popup.innerHTML = `<strong>Posto ${spot}</strong><span>${escapeHtml(o.name)}</span><small>${escapeHtml(o.label)} ${isFavoriteResident(o.name) ? '★' : ''}</small>`;
   const x = parseFloat(button.style.left), y = parseFloat(button.style.top);
-  const nearLeft = x < 24;
-  const nearRight = x > 76;
-  const nearTop = y < 24;
-  const useBelow = nearTop && !nearLeft;
+  const leftSideSpot = [1,2,3,4,5,8,9,10].includes(Number(spot));
+  const useBelow = !leftSideSpot && y < 20;
   popup.classList.toggle('below', useBelow);
-  popup.classList.toggle('left-edge', nearLeft);
-  popup.classList.toggle('right-edge', nearRight);
-  const left = nearLeft ? Math.max(x + 2.5, 4) : nearRight ? Math.min(x - 2.5, 96) : x;
-  const top = nearLeft ? Math.max(y - 4.5, 5) : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2.5, 7));
+  popup.classList.toggle('left-side', leftSideSpot);
+  popup.classList.toggle('left-edge', !leftSideSpot && x < 24);
+  popup.classList.toggle('right-edge', !leftSideSpot && x > 76);
+  const left = leftSideSpot ? x : (x < 24 ? Math.min(x + 6, 24) : x > 76 ? Math.max(x - 6, 76) : x);
+  const top = leftSideSpot ? Math.max(y - 3.2, 6) : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2, 8));
   popup.style.left = `${left}%`;
   popup.style.top = `${top}%`;
   popup.classList.add('open');
@@ -574,7 +573,7 @@ function bindEvents(){
   byId('spotModalClose').addEventListener('click', closeSpotModal); byId('spotModal').addEventListener('click', e=>{ if(e.target.id==='spotModal') closeSpotModal(); });
   byId('residentModalClose')?.addEventListener('click', closeResidentModal); byId('residentModal')?.addEventListener('click', e=>{ if(e.target.id==='residentModal') closeResidentModal(); });
   document.addEventListener('click', e=>{
-    const mapPopup = e.target.closest('.real-popup'); if(mapPopup){ mapPopup.classList.remove('open','below','left-edge','right-edge','spot-top-left'); mapPopup.innerHTML=''; document.querySelectorAll('.real-spot').forEach(btn=>btn.classList.remove('selected')); return; }
+    const mapPopup = e.target.closest('.real-popup'); if(mapPopup){ mapPopup.classList.remove('open','below','left-edge','right-edge','spot-top-left','left-side'); mapPopup.innerHTML=''; document.querySelectorAll('.real-spot').forEach(btn=>btn.classList.remove('selected')); return; }
     const closeResidentBtn = e.target.closest('[data-close-resident]'); if(closeResidentBtn){ closeResidentModal(); return; }
     const fav = e.target.closest('[data-fav-name]'); if(fav){ e.stopPropagation(); const name=fav.dataset.favName; if(name) toggleFavoriteResident(name); return; }
     const remove = e.target.closest('[data-fav-remove-name]'); if(remove){ e.stopPropagation(); const name=remove.dataset.favRemoveName; favorites=favorites.filter(n=>normalizeName(n)!==normalizeName(name)); saveFavorites(); renderAllDynamic(); return; }
@@ -582,6 +581,7 @@ function bindEvents(){
     if(!e.target.closest('.search-card')) closeResidentSuggestions();
     const resident = e.target.closest('[data-resident]'); if(resident){ const name=resident.dataset.resident; if(name) openResidentModal(name); return; }
     const open = e.target.closest('[data-open-spot]'); if(open){ const spot=Number(open.dataset.openSpot); if(spot) openSpotModal(spot); return; }
+    const currentSpot = e.target.closest('[data-open-current-spot]'); if(currentSpot){ const spot=Number(currentSpot.dataset.openCurrentSpot); if(spot){ closeResidentModal(); setTimeout(()=>openSpotModal(spot), 120); } return; }
     const mapSpot = e.target.closest('[data-map-spot]'); if(mapSpot){ openMapPopup(mapSpot.dataset.mapContext, Number(mapSpot.dataset.mapSpot), mapSpot.dataset.mapContext==='modalRealMap'); return; }
     if(!e.target.closest('.real-map')) document.querySelectorAll('.real-popup').forEach(p=>p.classList.remove('open'));
   });

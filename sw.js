@@ -1,4 +1,4 @@
-const CACHE_NAME = "parcheggi-premium-ios-v2";
+const CACHE_NAME = "parcheggi-mobile-stable-v10";
 const ASSETS = ["./", "./index.html", "./style.css", "./app.js", "./mappa-posti-numeri.webp", "./mappa-posti-numeri.png","./via.webp", "./icon.svg", "./manifest.webmanifest"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS).catch(() => null)));
