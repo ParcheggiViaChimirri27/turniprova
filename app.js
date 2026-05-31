@@ -451,11 +451,36 @@ function openMapPopup(targetId, spot, keepHighlight=false){
   popup.classList.toggle('left-side', leftSideSpot);
   popup.classList.toggle('left-edge', !leftSideSpot && x < 24);
   popup.classList.toggle('right-edge', !leftSideSpot && x > 76);
-  const left = leftSideSpot ? x : (x < 24 ? Math.min(x + 6, 24) : x > 76 ? Math.max(x - 6, 76) : x);
-  const top = leftSideSpot ? Math.max(y - 3.2, 6) : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2, 8));
+
+  // I posti sul lato sinistro della mappa sono vicini al bordo.
+  // Per 1 e 2 uso la stessa posizione di popup del posto 3, così il fumetto
+  // non esce in alto dallo schermo su iPhone/Safari.
+  const referenceLeftSpot = DATA.realSpotPositions.find(([n]) => Number(n) === 3);
+  const refX = referenceLeftSpot ? Number(referenceLeftSpot[1]) : x;
+  const refY = referenceLeftSpot ? Number(referenceLeftSpot[2]) : y;
+
+  const left = [1,2].includes(Number(spot))
+    ? refX
+    : leftSideSpot
+      ? x
+      : (x < 24 ? Math.min(x + 6, 24) : x > 76 ? Math.max(x - 6, 76) : x);
+
+  const top = [1,2].includes(Number(spot))
+    ? Math.max(refY - 3.2, 6)
+    : leftSideSpot
+      ? Math.max(y - 3.2, 6)
+      : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2, 8));
+
   popup.style.left = `${left}%`;
   popup.style.top = `${top}%`;
   popup.classList.add('open');
+}
+function closeAllMapPopups(){
+  document.querySelectorAll('.real-popup').forEach(p=>{
+    p.classList.remove('open','below','left-edge','right-edge','spot-top-left','left-side');
+    p.innerHTML='';
+  });
+  document.querySelectorAll('.real-spot').forEach(btn=>btn.classList.remove('selected','highlight'));
 }
 function openSpotModal(spot){
   const modal = byId('spotModal');
@@ -573,7 +598,9 @@ function bindEvents(){
   byId('spotModalClose').addEventListener('click', closeSpotModal); byId('spotModal').addEventListener('click', e=>{ if(e.target.id==='spotModal') closeSpotModal(); });
   byId('residentModalClose')?.addEventListener('click', closeResidentModal); byId('residentModal')?.addEventListener('click', e=>{ if(e.target.id==='residentModal') closeResidentModal(); });
   document.addEventListener('click', e=>{
-    const mapPopup = e.target.closest('.real-popup'); if(mapPopup){ mapPopup.classList.remove('open','below','left-edge','right-edge','spot-top-left','left-side'); mapPopup.innerHTML=''; document.querySelectorAll('.real-spot').forEach(btn=>btn.classList.remove('selected')); return; }
+    const mapPopup = e.target.closest('.real-popup'); if(mapPopup){ closeAllMapPopups(); return; }
+    const mapSpot = e.target.closest('[data-map-spot]'); if(mapSpot){ openMapPopup(mapSpot.dataset.mapContext, Number(mapSpot.dataset.mapSpot), mapSpot.dataset.mapContext==='modalRealMap'); return; }
+    const mapArea = e.target.closest('.real-map'); if(mapArea){ closeAllMapPopups(); return; }
     const closeResidentBtn = e.target.closest('[data-close-resident]'); if(closeResidentBtn){ closeResidentModal(); return; }
     const fav = e.target.closest('[data-fav-name]'); if(fav){ e.stopPropagation(); const name=fav.dataset.favName; if(name) toggleFavoriteResident(name); return; }
     const remove = e.target.closest('[data-fav-remove-name]'); if(remove){ e.stopPropagation(); const name=remove.dataset.favRemoveName; favorites=favorites.filter(n=>normalizeName(n)!==normalizeName(name)); saveFavorites(); renderAllDynamic(); return; }
@@ -582,8 +609,6 @@ function bindEvents(){
     const resident = e.target.closest('[data-resident]'); if(resident){ const name=resident.dataset.resident; if(name) openResidentModal(name); return; }
     const open = e.target.closest('[data-open-spot]'); if(open){ const spot=Number(open.dataset.openSpot); if(spot) openSpotModal(spot); return; }
     const currentSpot = e.target.closest('[data-open-current-spot]'); if(currentSpot){ const spot=Number(currentSpot.dataset.openCurrentSpot); if(spot){ closeResidentModal(); setTimeout(()=>openSpotModal(spot), 120); } return; }
-    const mapSpot = e.target.closest('[data-map-spot]'); if(mapSpot){ openMapPopup(mapSpot.dataset.mapContext, Number(mapSpot.dataset.mapSpot), mapSpot.dataset.mapContext==='modalRealMap'); return; }
-    if(!e.target.closest('.real-map')) document.querySelectorAll('.real-popup').forEach(p=>p.classList.remove('open'));
   });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSpotModal(); closeResidentModal(); } });
   document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{

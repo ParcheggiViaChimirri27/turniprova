@@ -151,3 +151,74 @@ html,body{max-width:100%;overflow-x:hidden;}
   .favorite-card{min-width:0;}
   .bottom-nav{z-index:5000;}
 }
+
+/* =========================================================
+   PATCH V11 - mappa, footer e sticky date
+========================================================= */
+/* Fumetti dei posti 1 e 2: stessa altezza visiva del posto 3 */
+.real-popup.left-side{
+  transform:translate(12px,-112%);
+}
+@media(max-width:680px){
+  .real-popup.left-side{
+    transform:translate(10px,-108%);
+  }
+}
+
+/* Footer davvero fisso e opaco: non deve far vedere contenuti dietro */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:10000;
+  background:#ffffff;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:0 -10px 30px rgba(7,23,53,.10);
+  transform:translateZ(0);
+  will-change:transform;
+}
+.app-shell{
+  padding-bottom:calc(170px + env(safe-area-inset-bottom));
+}
+@media(max-width:680px){
+  .app-shell{
+    padding-bottom:calc(180px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Barra data fissa allo scroll, ma con comportamento più stabile su iOS */
+.date-card{
+  position:sticky;
+  top:max(0px, env(safe-area-inset-top));
+  z-index:6000;
+  transform:translateZ(0);
+}
+
+/* Il cerchio centrale della scheda condomino deve indicare che è cliccabile */
+#residentModal .parking-number-circle[data-open-current-spot]{
+  cursor:pointer;
+  box-shadow:0 0 0 8px rgba(11,126,232,.12), 0 14px 34px rgba(11,126,232,.22);
+}
+#residentModal .parking-number-circle[data-open-current-spot]::after{
+  content:"TOCCA PER VEDERE LA MAPPA";
+  position:absolute;
+  left:50%;
+  top:calc(100% + 8px);
+  transform:translateX(-50%);
+  white-space:nowrap;
+  font-size:9px;
+  font-weight:900;
+  color:#7d8799;
+  letter-spacing:.03em;
+}
+#residentModal .selected-status{
+  position:relative;
+}
+@media(max-width:680px){
+  #residentModal .parking-number-circle[data-open-current-spot]::after{
+    font-size:8px;
+    top:calc(100% + 6px);
+  }
+}
