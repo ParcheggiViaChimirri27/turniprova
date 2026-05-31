@@ -1571,3 +1571,188 @@ body.modal-open{
     transform:translate(10px,-50%);
   }
 }
+
+/* =========================================================
+   V13 MOBILE FINAL PATCH
+   - Home: cartello + data sticky + mappa subito visibile
+   - Oggi dentro popup data
+   - Contatori sotto mappa
+   - Dropdown condomini scrollabile completo
+   - Footer fisso, opaco, stabile
+========================================================= */
+.date-input-wrap input[type="date"]{
+  pointer-events:none;
+}
+.today-btn{
+  display:none;
+}
+.home-countdown-bottom{
+  margin-top:14px;
+  margin-bottom:18px;
+}
+#homeSection .content-card{
+  margin-top:10px;
+}
+@media(max-width:680px){
+  .hero,.hero.compact{
+    padding:6px 0 8px;
+  }
+  .header-logo{
+    width:min(72vw,390px);
+  }
+  .date-card{
+    position:sticky;
+    top:0;
+    z-index:7000;
+    grid-template-columns:1fr 1.28fr 1fr;
+    margin-bottom:10px;
+  }
+  .period-btn span{
+    font-size:10px;
+    line-height:1.02;
+  }
+  .date-input-wrap .date-display{
+    font-size:clamp(15px,4.6vw,18px);
+  }
+  #homeSection .content-card{
+    margin-top:8px;
+  }
+  .home-countdown-bottom{
+    margin-top:12px;
+    margin-bottom:24px;
+  }
+  .countdown-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+/* Modal data con pulsante torna a oggi */
+.date-modal{
+  position:fixed;
+  inset:0;
+  z-index:30000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(7,23,53,.36);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+}
+.date-modal.open{
+  display:flex;
+}
+.date-modal-card{
+  width:min(92vw,420px);
+  border-radius:28px;
+  padding:16px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 24px 70px rgba(7,23,53,.28);
+  border:1px solid rgba(255,255,255,.72);
+}
+.date-modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.date-modal-head strong{
+  font-size:18px;
+  color:var(--navy);
+  font-weight:950;
+}
+.date-modal-head button{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:50%;
+  background:var(--blue-soft);
+  color:var(--blue);
+  font-size:26px;
+  font-weight:900;
+}
+.modal-date-input{
+  width:100%;
+  height:56px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#fff;
+  color:var(--navy);
+  font-size:18px;
+  font-weight:900;
+  text-align:center;
+  padding:0 14px;
+}
+.date-modal-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.date-modal-actions button{
+  height:48px;
+  border:0;
+  border-radius:17px;
+  font-weight:950;
+}
+.date-today-inline{
+  background:var(--blue-soft);
+  color:var(--blue);
+}
+.date-apply{
+  background:var(--navy);
+  color:#fff;
+}
+
+/* Ricerca condomino: risultati completi e scrollabili */
+#condominoSection .search-card{
+  position:sticky;
+  top:74px;
+  z-index:12000;
+  overflow:visible;
+}
+.search-suggestions{
+  max-height:min(68dvh,560px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+  z-index:14000;
+}
+@media(max-width:680px){
+  #condominoSection .search-card{
+    top:72px;
+  }
+  .search-suggestions{
+    max-height:calc(100dvh - 240px);
+    padding-bottom:18px;
+  }
+}
+
+/* Footer veramente fisso e non trasparente */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:25000;
+  min-height:88px;
+  background:#fff;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:0 -12px 34px rgba(7,23,53,.12);
+  transform:none;
+}
+.app-shell{
+  padding-bottom:calc(160px + env(safe-area-inset-bottom));
+}
+@media(max-width:680px){
+  .bottom-nav{
+    min-height:92px;
+    padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  }
+  .app-shell{
+    padding-bottom:calc(170px + env(safe-area-inset-bottom));
+  }
+}

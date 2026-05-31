@@ -36,24 +36,13 @@
             <span>Prossimo turno</span>
             <strong>›</strong>
           </button>
-          <button id="homeTodayBtn" class="today-btn" type="button">Torna a oggi</button>
         </section>
 
-        <section class="countdown-grid" aria-label="Contatori turno">
-          <article class="countdown-card main">
-            <span class="count-icon">📅</span>
-            <div><p>Il turno cambia tra</p><strong id="mainCountdown">-</strong><small id="mainCountdownDate">-</small></div>
-          </article>
-          <article class="countdown-card small">
-            <span class="count-icon">📅</span>
-            <div><p>Il turnetto cambia tra</p><strong id="smallCountdown">-</strong><small id="smallCountdownDate">-</small></div>
-          </article>
-        </section>
 
         <section class="content-card">
           <div class="map-head">
             <div>
-              <h2>Mappa parcheggi</h2>
+              <h2>Mappa dei posti auto</h2>
               <p id="mapDates">Periodo corrente</p>
             </div>
             <div class="view-toggle" aria-label="Cambia vista">
@@ -83,6 +72,17 @@
             <p class="hint">La mappa è interattiva: tocca un posto per vedere l’assegnatario.</p>
           </div>
         </section>
+
+        <section class="countdown-grid home-countdown-bottom" aria-label="Contatori turno">
+          <article class="countdown-card main">
+            <span class="count-icon">📅</span>
+            <div><p>Il turno cambia tra</p><strong id="mainCountdown">-</strong><small id="mainCountdownDate">-</small></div>
+          </article>
+          <article class="countdown-card small">
+            <span class="count-icon">📅</span>
+            <div><p>Il turnetto cambia tra</p><strong id="smallCountdown">-</strong><small id="smallCountdownDate">-</small></div>
+          </article>
+        </section>
       </section>
 
       <section id="condominoSection" class="page" aria-labelledby="condominoTitle">
@@ -94,7 +94,6 @@
           <button id="residentPrevPeriodBtn" class="period-btn" type="button"><span>Precedente</span><strong>‹</strong></button>
           <label class="date-input-wrap" for="residentDateInput"><span>Data</span><strong id="residentDateLabel" class="date-display">-</strong><input id="residentDateInput" type="date" /></label>
           <button id="residentNextPeriodBtn" class="period-btn" type="button"><span>Prossimo</span><strong>›</strong></button>
-          <button id="residentTodayBtn" class="today-btn" type="button">Oggi</button>
         </section>
 
 
@@ -118,7 +117,6 @@
           <button id="rightsPrevPeriodBtn" class="period-btn" type="button"><span>Precedente</span><strong>‹</strong></button>
           <label class="date-input-wrap" for="rightsDateInput"><span>Data</span><strong id="rightsDateLabel" class="date-display">-</strong><input id="rightsDateInput" type="date" /></label>
           <button id="rightsNextPeriodBtn" class="period-btn" type="button"><span>Prossimo</span><strong>›</strong></button>
-          <button id="rightsTodayBtn" class="today-btn" type="button">Oggi</button>
         </section>
 
         <section class="content-card rights-card">
@@ -170,6 +168,20 @@
         <button id="residentModalClose" class="modal-close" type="button" aria-label="Chiudi">×</button>
       </div>
       <div id="residentModalBody" class="modal-body info-body"></div>
+    </div>
+  </div>
+
+  <div id="datePickerModal" class="date-modal" aria-hidden="true">
+    <div class="date-modal-card" role="dialog" aria-modal="true" aria-label="Seleziona data">
+      <div class="date-modal-head">
+        <strong>SELEZIONA DATA</strong>
+        <button id="dateModalClose" type="button" aria-label="Chiudi">×</button>
+      </div>
+      <input id="modalDateInput" class="modal-date-input" type="date" />
+      <div class="date-modal-actions">
+        <button id="modalTodayBtn" class="date-today-inline" type="button">TORNA A OGGI</button>
+        <button id="modalApplyDateBtn" class="date-apply" type="button">CONFERMA</button>
+      </div>
     </div>
   </div>
 

@@ -577,20 +577,48 @@ function goToPeriod(direction){
   setDate(skipFree(target, direction === 'next' ? 1 : -1));
 }
 function setView(view){ currentView=view; byId('gridPanel').classList.toggle('active', view==='grid'); byId('mapPanel').classList.toggle('active', view==='map'); byId('gridViewBtn').classList.toggle('active', view==='grid'); byId('realViewBtn').classList.toggle('active', view==='map'); if(view==='map') renderRealMap('realMap'); }
+
+function openDateModal(){
+  const modal = byId('datePickerModal');
+  const input = byId('modalDateInput');
+  if(!modal || !input) return;
+  input.value = toInputDate(selectedDate);
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>{
+    try{ input.showPicker ? input.showPicker() : input.focus(); }
+    catch(_){ input.focus(); }
+  }, 80);
+}
+function closeDateModal(){
+  const modal = byId('datePickerModal');
+  if(!modal) return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+}
+function applyModalDate(){
+  const input = byId('modalDateInput');
+  if(input && input.value) setDate(fromInputDate(input.value));
+  closeDateModal();
+}
+
 function bindEvents(){
   ['homeDateInput','residentDateInput','rightsDateInput','favoritesDateInput'].forEach(id=>{
     const input = byId(id);
     if(!input) return;
+    input.tabIndex = -1;
+    input.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); openDateModal(); });
     input.addEventListener('change', e=>setDate(fromInputDate(e.target.value)));
     const wrap = input.closest('.date-input-wrap');
     if(wrap){
-      wrap.addEventListener('click', ()=>{
-        try{ input.showPicker ? input.showPicker() : input.focus(); }
-        catch(_){ input.focus(); }
-      });
+      wrap.addEventListener('click', e=>{ e.preventDefault(); openDateModal(); });
     }
   });
-  byId('homeTodayBtn').addEventListener('click', ()=>setDate(new Date())); byId('residentTodayBtn').addEventListener('click', ()=>setDate(new Date())); byId('rightsTodayBtn')?.addEventListener('click', ()=>setDate(new Date()));
+  byId('modalDateInput')?.addEventListener('change', e=>{ if(e.target.value) setDate(fromInputDate(e.target.value)); });
+  byId('modalTodayBtn')?.addEventListener('click', ()=>{ setDate(new Date()); const input=byId('modalDateInput'); if(input) input.value=toInputDate(selectedDate); });
+  byId('modalApplyDateBtn')?.addEventListener('click', applyModalDate);
+  byId('dateModalClose')?.addEventListener('click', closeDateModal);
+  byId('datePickerModal')?.addEventListener('click', e=>{ if(e.target.id==='datePickerModal') closeDateModal(); });
   ['homeNextPeriodBtn','residentNextPeriodBtn','rightsNextPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('next')));
   ['homePrevPeriodBtn','residentPrevPeriodBtn','rightsPrevPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('prev')));
   byId('gridViewBtn').addEventListener('click',()=>setView('grid')); byId('realViewBtn').addEventListener('click',()=>setView('map'));
@@ -612,7 +640,7 @@ function bindEvents(){
     const open = e.target.closest('[data-open-spot]'); if(open){ const spot=Number(open.dataset.openSpot); if(spot) openSpotModal(spot); return; }
     const currentSpot = e.target.closest('[data-open-current-spot]'); if(currentSpot){ const spot=Number(currentSpot.dataset.openCurrentSpot); if(spot){ closeResidentModal(); setTimeout(()=>openSpotModal(spot), 120); } return; }
   });
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSpotModal(); closeResidentModal(); } });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSpotModal(); closeResidentModal(); closeDateModal(); } });
   document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
     document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); byId(btn.dataset.section).classList.add('active');
