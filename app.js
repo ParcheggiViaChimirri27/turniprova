@@ -383,9 +383,9 @@ function openResidentModal(name){
   byId('residentModalTitle').textContent = name;
   byId('residentModalSubtitle').textContent = 'Situazione parcheggio';
   byId('residentModalBody').innerHTML = residentStoryHtml(name);
-  modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('modal-open');
 }
-function closeResidentModal(){ const modal=byId('residentModal'); modal?.classList.remove('open'); modal?.setAttribute('aria-hidden','true'); const input=byId('residentSearchInput'); if(input) input.value=''; closeResidentSuggestions(); renderResidents(); }
+function closeResidentModal(){ const modal=byId('residentModal'); modal?.classList.remove('open'); modal?.setAttribute('aria-hidden','true'); document.body.classList.remove('modal-open'); const input=byId('residentSearchInput'); if(input) input.value=''; closeResidentSuggestions(); renderResidents(); }
 function renderFavorites(){
   const list = byId('favoritesList'); if(!list) return;
   if(!favorites.length){ list.innerHTML = '<div class="favorite-empty">Aggiungi una stellina su un condomino per ritrovarlo qui.</div>'; return; }
@@ -465,10 +465,12 @@ function openMapPopup(targetId, spot, keepHighlight=false){
       ? x
       : (x < 24 ? Math.min(x + 6, 24) : x > 76 ? Math.max(x - 6, 76) : x);
 
+  // Per i posti sul lato sinistro il fumetto deve stare ACCANTO al posto,
+  // non troppo sopra. I posti 1 e 2 ereditano la stessa altezza del posto 3.
   const top = [1,2].includes(Number(spot))
-    ? Math.max(refY - 3.2, 6)
+    ? refY
     : leftSideSpot
-      ? Math.max(y - 3.2, 6)
+      ? y
       : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2, 8));
 
   popup.style.left = `${left}%`;
@@ -487,10 +489,10 @@ function openSpotModal(spot){
   const o = occupantLabel(spot);
   byId('spotModalTitle').textContent = `Posto ${spot}`;
   byId('spotModalSubtitle').textContent = `${o.name} · ${o.label}`;
-  modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('modal-open');
   renderRealMap('modalRealMap', spot);
 }
-function closeSpotModal(){ const modal=byId('spotModal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+function closeSpotModal(){ const modal=byId('spotModal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); if(!byId('residentModal')?.classList.contains('open')) document.body.classList.remove('modal-open'); }
 
 function closeResidentSuggestions(){
   const box = byId('residentSuggestions');

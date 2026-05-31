@@ -1295,3 +1295,279 @@ html,body{max-width:100%;overflow-x:hidden;}
   .favorite-card{min-width:0;}
   .bottom-nav{z-index:5000;}
 }
+
+
+/* =========================================================
+   PATCH V12 DEFINITIVA MOBILE
+   - i popup/modali stanno sopra la barra data e la ricerca
+   - il fumetto mappa non esce sopra per i posti laterali
+   - footer realmente fermo e contenuto con spazio sotto
+   - scheda condomino leggibile e numero centrale cliccabile
+========================================================= */
+body.modal-open{
+  overflow:hidden;
+  touch-action:none;
+}
+.modal{
+  z-index:30000;
+  align-items:center;
+  padding:max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+}
+.modal.open{
+  display:flex;
+}
+#residentModal,
+#spotModal{
+  z-index:30000;
+}
+#residentModal .modal-dialog.info-dialog,
+#spotModal .modal-dialog{
+  position:relative;
+  z-index:30001;
+}
+.date-card{
+  z-index:600;
+}
+#condominoSection .search-card{
+  z-index:700;
+}
+.search-suggestions{
+  z-index:12000;
+}
+
+/* Fumetti mappa: per i posti a sinistra il popup resta accanto al posto */
+.real-popup.left-side,
+.real-popup.spot-top-left,
+.real-popup.left-edge{
+  transform:translate(14px,-50%);
+}
+.real-popup.left-side.below,
+.real-popup.left-edge.below{
+  transform:translate(14px,10px);
+}
+.real-popup.right-edge{
+  transform:translate(calc(-100% - 14px),-50%);
+}
+.real-popup.right-edge.below{
+  transform:translate(calc(-100% - 14px),10px);
+}
+.real-popup{
+  max-width:min(44vw, 170px);
+}
+
+/* Mappa in modal: navigabile e non tagliata */
+.modal-map-scroll{
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x pan-y;
+  overscroll-behavior:contain;
+}
+.modal-map{
+  width:min(100%, 520px);
+  max-width:100%;
+}
+
+/* Footer: fisso e opaco */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:10000;
+  background:#fff;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:0 -10px 30px rgba(7,23,53,.12);
+  transform:translate3d(0,0,0);
+}
+.app-shell{
+  padding-bottom:calc(170px + env(safe-area-inset-bottom));
+}
+
+/* Scheda condomino sopra a tutto e senza tagli */
+#residentModal .modal-dialog.info-dialog{
+  max-height:calc(100dvh - 22px);
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+}
+#residentModal .resident-focus-card{
+  overflow:visible;
+}
+#residentModal .selected-status{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  position:relative;
+}
+#residentModal .parking-status-label{
+  display:block;
+  margin:0;
+  font-size:clamp(18px, 5vw, 24px);
+  line-height:1;
+  font-weight:950;
+}
+#residentModal .parking-number-circle{
+  display:grid;
+  place-items:center;
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  color:#fff;
+  font-size:clamp(34px, 10vw, 46px);
+  line-height:1;
+  font-weight:950;
+  text-align:center;
+  letter-spacing:-.04em;
+}
+#residentModal .resident-focus-card.status-main .parking-number-circle{
+  background:var(--blue);
+  box-shadow:0 0 0 10px rgba(11,126,232,.14), 0 14px 32px rgba(11,126,232,.22);
+}
+#residentModal .resident-focus-card.status-small .parking-number-circle{
+  background:var(--green);
+  box-shadow:0 0 0 10px rgba(32,167,123,.16), 0 14px 32px rgba(32,167,123,.20);
+}
+#residentModal .resident-focus-card.status-out .parking-number-circle,
+#residentModal .resident-focus-card.status-free .parking-number-circle{
+  background:#8b95a5;
+  box-shadow:0 0 0 10px rgba(139,149,165,.16), 0 14px 32px rgba(139,149,165,.18);
+}
+#residentModal .parking-number-circle[data-open-current-spot]::after{
+  content:"TOCCA PER VEDERE LA MAPPA";
+  position:absolute;
+  left:50%;
+  bottom:-22px;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  color:#7d8799;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.03em;
+}
+#residentModal .resident-dashboard{
+  margin-top:14px;
+}
+#residentModal .resident-info-tile span{
+  display:none;
+}
+#residentModal .resident-info-tile strong{
+  font-size:clamp(24px, 7vw, 34px);
+  line-height:1;
+}
+#residentModal .resident-info-tile.main strong{color:var(--blue)}
+#residentModal .resident-info-tile.small strong{color:var(--green)}
+#residentModal .resident-info-tile.scale strong{color:var(--navy)}
+#residentModal .story-alert .remember-title{color:var(--danger)}
+#residentModal .days-highlight,
+#residentModal .spot-highlight,
+#residentModal .date-highlight{
+  display:inline;
+  min-width:0;
+  min-height:0;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--blue);
+}
+#residentModal .date-highlight{color:var(--green)}
+
+@media(max-width:680px){
+  .app-shell{
+    padding-left:10px;
+    padding-right:10px;
+    padding-bottom:calc(178px + env(safe-area-inset-bottom));
+  }
+  .modal{
+    padding:8px 8px max(8px, env(safe-area-inset-bottom));
+    align-items:center;
+  }
+  #residentModal .modal-dialog.info-dialog,
+  #spotModal .modal-dialog{
+    width:min(94vw, 560px);
+    max-height:calc(100dvh - 18px);
+    border-radius:30px;
+  }
+  #residentModal .modal-body.info-body{
+    padding:10px;
+  }
+  #residentModal .resident-pop-header.clean{
+    grid-template-columns:48px minmax(0,1fr) 36px;
+    padding:9px;
+    gap:9px;
+    border-radius:22px;
+  }
+  #residentModal .resident-pop-header.clean strong{
+    font-size:18px;
+    line-height:1.02;
+  }
+  #residentModal .resident-large{
+    width:42px;
+    height:42px;
+    font-size:15px;
+  }
+  #residentModal .resident-inline-close{
+    width:34px;
+    height:34px;
+    font-size:24px;
+  }
+  #residentModal .resident-focus-card{
+    padding:13px 10px 28px;
+    border-radius:22px;
+    min-height:0;
+  }
+  #residentModal .resident-focus-card span:first-child{
+    font-size:10px;
+    margin-bottom:8px;
+  }
+  #residentModal .selected-status{
+    gap:10px;
+  }
+  #residentModal .parking-number-circle{
+    width:78px;
+    height:78px;
+    font-size:36px;
+  }
+  #residentModal .parking-status-label{
+    font-size:18px;
+  }
+  #residentModal .parking-number-circle[data-open-current-spot]::after{
+    bottom:-20px;
+    font-size:8px;
+  }
+  #residentModal .resident-dashboard{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+  }
+  #residentModal .resident-info-tile{
+    min-height:72px;
+    padding:8px 4px;
+    border-radius:18px;
+  }
+  #residentModal .resident-info-tile strong{
+    font-size:22px;
+  }
+  #residentModal .story-alert{
+    padding:14px 10px;
+    border-radius:20px;
+  }
+  #residentModal .story-alert .remember-title{
+    font-size:22px;
+  }
+  #residentModal .story-alert p{
+    font-size:14px;
+    line-height:1.22;
+    margin-top:6px;
+  }
+  .real-popup{
+    width:clamp(118px, 38vw, 150px);
+    max-width:48vw;
+  }
+  .real-popup.left-side,
+  .real-popup.spot-top-left,
+  .real-popup.left-edge{
+    transform:translate(10px,-50%);
+  }
+}
