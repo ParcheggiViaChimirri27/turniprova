@@ -215,7 +215,7 @@ h2{
 .legend span::before{content:"";display:inline-block;width:13px;height:13px;border-radius:5px;margin-right:7px;vertical-align:-2px;border:2px solid var(--line);background:#fff}
 .legend .main-dot::before{border-color:var(--blue);background:var(--blue-soft)}
 .legend .small-dot::before{border-color:var(--green);background:var(--green-soft)}
-.legend .fav-dot::before{content:"★";width:auto;height:auto;border:0;background:transparent;color:var(--gold);font-size:16px;margin-right:6px;vertical-align:-1px}
+.legend .fav-dot::before{content:"★";width:auto;height:auto;border:0;background:transparent;color:var(--gold);font-size:16px; position:relative;top:-2px;}
 
 .view-panel{display:none}.view-panel.active{display:block}
 
@@ -1754,5 +1754,724 @@ body.modal-open{
   }
   .app-shell{
     padding-bottom:calc(170px + env(safe-area-inset-bottom));
+  }
+}
+
+/* =========================================================
+   V14 REFINEMENT - mobile-first final layout
+   - header + date sticky in every page
+   - compact date, abbreviated by JS
+   - legend below map/grid
+   - 5 cards per row on mobile
+   - condominium page uses inline filter, no dropdown
+   - favorites page has date and vertical cards
+========================================================= */
+:root{
+  --sticky-hero-h:78px;
+  --sticky-date-h:76px;
+}
+
+.hero,
+.hero.compact{
+  position:sticky;
+  top:0;
+  z-index:7600;
+  min-height:var(--sticky-hero-h);
+  padding:8px 0 6px;
+  background:linear-gradient(180deg,#f8fcff 0%,rgba(248,252,255,.96) 100%);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+}
+.header-logo{
+  width:min(64vw,390px);
+  max-height:62px;
+  height:auto;
+}
+.date-card,
+.date-card.compact-date,
+.rights-date-card,
+.favorites-date-card{
+  position:sticky;
+  top:var(--sticky-hero-h);
+  z-index:7500;
+  min-height:0;
+  padding:7px;
+  gap:7px;
+  margin-bottom:10px;
+  border-radius:22px;
+  grid-template-columns:1fr minmax(118px,1.25fr) 1fr;
+}
+.period-btn{
+  min-height:44px;
+  border-radius:16px;
+  padding:0 8px;
+  gap:5px;
+}
+.period-btn span{
+  font-size:10px;
+  max-width:82px;
+  line-height:1.02;
+}
+.period-btn strong{
+  font-size:24px;
+}
+.date-input-wrap{
+  min-height:44px;
+  border-radius:16px;
+  padding:0 8px;
+}
+.date-input-wrap .date-display{
+  font-size:clamp(13px,3.8vw,17px);
+  line-height:1.02;
+  letter-spacing:-.035em;
+  white-space:normal;
+}
+
+/* Mappa: header compatto con toggle a destra */
+.map-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:start;
+  gap:8px;
+  padding:15px 14px 10px;
+}
+.map-head h2{
+  font-size:clamp(24px,7.1vw,34px);
+  line-height:1.02;
+}
+.map-head p{
+  font-size:12px;
+  line-height:1.08;
+  margin-top:4px;
+}
+.view-toggle{
+  align-self:start;
+  min-width:82px;
+  width:82px;
+  height:42px;
+  padding:4px;
+  border-radius:19px;
+}
+.view-toggle button{
+  min-width:0;
+  width:34px;
+  height:34px;
+  padding:0;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  line-height:1;
+}
+
+/* Legenda sotto i contenuti, più compatta */
+.legend.inline-legend{
+  padding:10px 12px 8px;
+  gap:8px 10px;
+  font-size:10px;
+  line-height:1;
+  justify-content:flex-start;
+}
+.legend.inline-legend span::before{
+  width:11px;
+  height:11px;
+  border-radius:4px;
+  margin-right:4px;
+}
+
+/* Griglia: 5 colonne vere su mobile, nomi più piccoli e protetti dalla stella */
+.parking-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:6px;
+  padding:9px 8px 6px;
+}
+.spot-card{
+  min-width:0;
+  aspect-ratio:1/.98;
+  border-radius:14px;
+  padding:5px 3px 17px;
+}
+.spot-number{
+  font-size:clamp(28px,8vw,42px);
+  line-height:.95;
+}
+.spot-name{
+  width:100%;
+  max-width:100%;
+  min-height:22px;
+  margin-top:5px;
+  padding:0 2px;
+  font-size:clamp(7.2px,2.05vw,9.5px);
+  line-height:1.02;
+  letter-spacing:-.045em;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+}
+.star-btn{
+  right:1px;
+  bottom:0;
+  font-size:16px;
+  padding:3px;
+}
+.hint{
+  font-size:11px;
+  padding:0 12px 12px;
+}
+
+/* Condomini: filtro stretto sotto il titolo, senza dropdown */
+#condominoSection .content-card{
+  overflow:visible;
+}
+#condominoSection .map-head.simple.resident-title{
+  text-align:left;
+  padding-bottom:8px;
+}
+#condominoSection .map-head.simple.resident-title h2{
+  font-size:clamp(26px,7.5vw,36px);
+}
+.resident-inline-search{
+  margin:0 12px 8px;
+  padding:5px;
+  border-radius:16px;
+  box-shadow:none;
+  border-color:rgba(223,233,246,.9);
+  position:relative;
+  top:auto;
+  z-index:1;
+}
+.resident-inline-search .search-box{
+  height:38px;
+  border-radius:13px;
+  padding:0 10px;
+}
+.resident-inline-search .search-box span{
+  font-size:20px;
+}
+.resident-inline-search .search-box input{
+  font-size:14px;
+  font-weight:850;
+}
+.search-suggestions{
+  display:none;
+}
+.resident-list{
+  padding:6px 8px 10px;
+}
+.resident-row{
+  min-height:70px;
+  padding:8px 7px;
+  gap:7px;
+  grid-template-columns:minmax(0,1fr) 56px 56px 34px;
+}
+.resident-main{
+  grid-template-columns:45px minmax(0,1fr);
+  gap:9px;
+}
+.avatar{
+  width:40px;
+  height:40px;
+  font-size:14px;
+}
+.resident-name{
+  font-size:clamp(12px,3.4vw,15px);
+  line-height:1.02;
+  letter-spacing:-.04em;
+}
+.resident-chip{
+  height:40px;
+  border-radius:15px;
+  font-size:17px;
+}
+.row-star{
+  font-size:23px;
+}
+
+/* Lista posti: preferiti solo con stella, nessun colore arancione */
+.name-pill.favorite-name{
+  border-color:var(--line);
+  background:#fff;
+  color:#99a2b3;
+}
+.name-pill.active-main.favorite-name{
+  border-color:var(--blue);
+  background:var(--blue-soft);
+  color:var(--blue);
+}
+.name-pill.active-small.favorite-name{
+  border-color:var(--green);
+  background:var(--green-soft);
+  color:#08734f;
+}
+.inline-star{
+  color:var(--gold);
+}
+
+/* Preferiti: una card per riga, data presente, cerchi stabili */
+.favorites-page-card{
+  margin-top:10px;
+}
+.favorites-list{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  overflow:visible;
+}
+.favorite-card{
+  min-width:0;
+  width:100%;
+  min-height:86px;
+  grid-template-columns:minmax(0,1fr) 72px;
+  padding:10px 34px 10px 12px;
+}
+.favorite-card .fav-person{
+  grid-template-columns:48px minmax(0,1fr);
+  justify-items:start;
+  text-align:left;
+  gap:12px;
+}
+.favorite-card .fav-initials{
+  width:46px;
+  height:46px;
+  font-size:15px;
+  flex:0 0 46px;
+}
+.favorite-card .fav-person strong{
+  text-align:left;
+  font-size:clamp(13px,3.8vw,16px);
+  line-height:1.05;
+  -webkit-line-clamp:2;
+}
+.favorite-card .fav-status-circle{
+  width:46px;
+  height:46px;
+  font-size:19px;
+  flex:0 0 46px;
+}
+.favorite-card.out .fav-status-circle{
+  font-size:22px;
+}
+.favorite-card .fav-status small{
+  font-size:9px;
+}
+
+@media(max-width:380px){
+  .period-btn span{font-size:9px;max-width:68px;}
+  .date-input-wrap .date-display{font-size:12px;}
+  .parking-grid{gap:5px;padding-left:6px;padding-right:6px;}
+  .spot-number{font-size:27px;}
+  .spot-name{font-size:7px;}
+  .resident-row{grid-template-columns:minmax(0,1fr) 50px 50px 30px;}
+  .resident-chip{font-size:15px;}
+}
+
+@media(min-width:760px){
+  :root{--sticky-hero-h:92px;}
+  .header-logo{width:min(46vw,520px);max-height:78px;}
+  .date-card{top:var(--sticky-hero-h);}
+  .parking-grid{gap:10px;padding:14px 18px 8px;}
+  .spot-name{font-size:11px;}
+}
+
+/* =========================================================
+   V15 FIX RICHIESTE FINALI MOBILE
+   - toggle senza icone doppie
+   - header/cartello e data sticky più stabili
+   - legenda centrata sotto mappa/griglia + hint corsivo
+   - 5 card in griglia su mobile con nomi più piccoli
+   - condomini: titolo centrato, filtro compatto, box numeri ridotti
+   - preferiti: nome centrato verticalmente
+========================================================= */
+
+:root{
+  --sticky-hero-h:76px;
+}
+
+.hero,
+.hero.compact{
+  background:transparent;
+  box-shadow:none;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  min-height:var(--sticky-hero-h);
+  padding:7px 0 5px;
+  z-index:9000;
+}
+.header-logo{
+  width:min(60vw,390px);
+  max-height:60px;
+  filter:drop-shadow(0 10px 18px rgba(7,23,53,.16));
+}
+.date-card,
+.date-card.compact-date,
+.rights-date-card,
+.favorites-date-card{
+  top:var(--sticky-hero-h);
+  z-index:8900;
+  min-height:0;
+  padding:6px;
+  gap:6px;
+  border-radius:22px;
+  grid-template-columns:1fr minmax(104px,1.08fr) 1fr;
+  box-shadow:0 12px 34px rgba(16,40,86,.10);
+}
+.period-btn{
+  min-height:40px;
+  border-radius:15px;
+}
+.period-btn span{
+  font-size:9.5px;
+  max-width:78px;
+}
+.period-btn strong{font-size:22px}
+.date-input-wrap{
+  min-height:40px;
+  border-radius:15px;
+}
+.date-input-wrap .date-display{
+  font-size:clamp(12px,3.25vw,15px);
+  line-height:1.02;
+}
+
+/* Toggle griglia/mappa: usa solo pseudo-icone, non il testo interno */
+.view-toggle{
+  width:76px;
+  height:38px;
+  padding:4px;
+  border-radius:18px;
+}
+.view-toggle button{
+  width:31px;
+  height:30px;
+  font-size:0;
+  color:transparent;
+  overflow:hidden;
+}
+.view-toggle button::before{
+  display:block;
+  font-size:17px;
+  line-height:1;
+  color:#6f7890;
+}
+#gridViewBtn::before{content:"▦";}
+#realViewBtn::before{content:"⌖";}
+.view-toggle button.active::before{color:#fff;}
+
+.map-head{
+  padding:14px 14px 9px;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.map-head h2{
+  font-size:clamp(24px,7vw,32px);
+  line-height:1.02;
+}
+.map-head p{
+  font-size:11px;
+  line-height:1.08;
+}
+.map-head.simple,
+#condominoSection .map-head.simple.resident-title{
+  text-align:center;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+#condominoSection .map-head.simple.resident-title h2{
+  text-align:center;
+  font-size:clamp(25px,7vw,34px);
+}
+.content-card,
+.favorites-card,
+.search-card{
+  border-radius:var(--radius);
+}
+
+/* Legenda centrata sotto mappa/griglia */
+.legend.inline-legend{
+  justify-content:center;
+  align-items:center;
+  padding:9px 10px 4px;
+  gap:8px 11px;
+  font-size:10px;
+  text-align:center;
+}
+.legend.inline-legend span{
+  display:inline-flex;
+  align-items:center;
+}
+.hint{
+  padding:5px 14px 12px;
+  font-size:10.5px;
+  font-style:italic;
+  line-height:1.25;
+  text-align:center;
+}
+
+/* 5 card per riga, nomi più piccoli e spazio per la stellina */
+.parking-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:6px;
+  padding:9px 8px 6px;
+  overflow:hidden;
+}
+.spot-card{
+  aspect-ratio:1/.98;
+  border-radius:14px;
+  padding:4px 3px 16px;
+}
+.spot-number{
+  font-size:clamp(26px,8.2vw,38px);
+  line-height:.95;
+}
+.spot-name{
+  font-size:clamp(6.8px,1.98vw,9px);
+  line-height:1.02;
+  min-height:22px;
+  margin-top:4px;
+  padding:0 3px;
+  letter-spacing:-.045em;
+  -webkit-line-clamp:3;
+}
+.star-btn{
+  right:1px;
+  bottom:0;
+  font-size:15px;
+  padding:3px;
+}
+
+/* Condomini: filtro compatto e numeri meno ingombranti */
+.resident-inline-search{
+  margin:0 12px 8px;
+  padding:4px;
+  border-radius:15px;
+  box-shadow:none;
+}
+.resident-inline-search .search-box{
+  height:36px;
+  border-radius:12px;
+  padding:0 10px;
+}
+.resident-inline-search .search-box span{font-size:18px;}
+.resident-inline-search .search-box input{font-size:13.5px;}
+.resident-row{
+  grid-template-columns:minmax(0,1fr) 50px 50px 32px;
+  gap:6px;
+  min-height:64px;
+  padding:7px 6px;
+}
+.resident-main{
+  grid-template-columns:42px minmax(0,1fr);
+  gap:8px;
+}
+.avatar{
+  width:38px;
+  height:38px;
+  font-size:13.5px;
+}
+.resident-name{
+  font-size:clamp(11.5px,3.2vw,14px);
+}
+.resident-chip{
+  height:36px;
+  border-radius:13px;
+  font-size:15px;
+}
+.row-star{font-size:21px;}
+
+/* Preferiti: nome centrato verticalmente nella card */
+.favorite-card{
+  align-items:center;
+}
+.favorite-card .fav-person{
+  align-items:center;
+}
+.favorite-card .fav-person strong{
+  align-self:center;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* Lista posti: stella ma mantieni colori turno/turnetto */
+.name-pill.favorite-name{background:#fff;color:#99a2b3;border-color:var(--line);}
+.name-pill.active-main.favorite-name{background:var(--blue-soft);color:var(--blue);border-color:var(--blue);}
+.name-pill.active-small.favorite-name{background:var(--green-soft);color:#08734f;border-color:var(--green);}
+
+@media(max-width:380px){
+  .parking-grid{gap:5px;padding-left:6px;padding-right:6px;}
+  .spot-number{font-size:25px;}
+  .spot-name{font-size:6.6px;}
+  .period-btn span{font-size:8.7px;}
+  .date-input-wrap .date-display{font-size:11.5px;}
+}
+
+@media(min-width:760px){
+  :root{--sticky-hero-h:86px;}
+  .header-logo{width:min(42vw,500px);max-height:72px;}
+  .date-card{top:var(--sticky-hero-h);}
+  .parking-grid{gap:10px;padding:14px 18px 8px;}
+  .spot-name{font-size:10.5px;}
+}
+
+/* =========================================================
+   V16 MICRO-FIX MOBILE
+   - frecce periodo centrate verticalmente
+   - legenda/hint con spaziatura corretta e stella allineata
+   - popup mappa allineati al posto sui posti laterali e colorati per condomino
+========================================================= */
+.period-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+.period-btn strong{
+  display:inline-grid;
+  place-items:center;
+  width:18px;
+  height:18px;
+  line-height:1;
+  font-size:21px;
+  transform:translateY(-1px);
+}
+.legend.inline-legend{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px 12px;
+  padding:10px 10px 8px;
+  line-height:1;
+}
+.legend.inline-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  line-height:1;
+}
+.legend.inline-legend span::before{
+  margin-right:0;
+  vertical-align:0;
+  flex:0 0 auto;
+}
+.legend.inline-legend .fav-dot::before{
+  display:inline-grid;
+  place-items:center;
+  font-size:17px;
+  line-height:1;
+  transform:translateY(-1px);
+}
+.hint{
+  margin-top:3px;
+  padding-top:5px;
+}
+.real-popup{
+  background:linear-gradient(135deg,var(--resident-soft,#ffffff),rgba(255,255,255,.97));
+  border-color:var(--resident-border,var(--line));
+  box-shadow:0 16px 40px rgba(7,23,53,.22);
+}
+.real-popup span{
+  color:var(--text);
+}
+.real-popup small{
+  color:var(--resident-color,var(--muted));
+}
+.real-popup.left-side{
+  transform:translate(14px,-50%);
+  text-align:left;
+}
+.real-popup.left-side.below{
+  transform:translate(14px,-50%);
+}
+.real-popup.left-side strong,
+.real-popup.left-side span,
+.real-popup.left-side small{
+  text-align:left;
+}
+@media(max-width:560px){
+  .period-btn strong{
+    width:16px;
+    height:16px;
+    font-size:19px;
+    transform:translateY(-1px);
+  }
+  .legend.inline-legend{
+    gap:7px 10px;
+    padding-bottom:8px;
+  }
+  .hint{
+    margin-top:4px;
+  }
+  .real-popup.left-side{
+    transform:translate(10px,-50%);
+    max-width:60%;
+  }
+}
+
+
+/* =========================================================
+   V17 MICRO-FIX
+   - popup posti laterali centrati nel contenuto
+   - stella legenda perfettamente allineata
+   - frecce precedente/prossimo agli estremi e centrate verticalmente
+========================================================= */
+.period-btn{
+  position:relative;
+  justify-content:center;
+  padding-left:30px;
+  padding-right:30px;
+}
+.period-btn strong{
+  position:absolute;
+  top:50%;
+  margin:0;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  width:18px;
+  height:18px;
+  line-height:1;
+}
+button[id$="PrevPeriodBtn"] strong{
+  left:12px;
+}
+button[id$="NextPeriodBtn"] strong{
+  right:12px;
+}
+.legend.inline-legend{
+  align-items:center;
+}
+.legend.inline-legend .fav-dot{
+  align-items:center;
+}
+.legend.inline-legend .fav-dot::before{
+  transform:translateY(-2px);
+  font-size:16px;
+  line-height:1;
+}
+.real-popup.left-side,
+.real-popup.left-side.below{
+  text-align:center;
+}
+.real-popup.left-side strong,
+.real-popup.left-side span,
+.real-popup.left-side small{
+  text-align:center;
+}
+@media(max-width:560px){
+  .period-btn{
+    padding-left:24px;
+    padding-right:24px;
+  }
+  .period-btn strong{
+    width:16px;
+    height:16px;
+    font-size:19px;
+    transform:translateY(-50%);
+  }
+  button[id$="PrevPeriodBtn"] strong{left:9px;}
+  button[id$="NextPeriodBtn"] strong{right:9px;}
+  .legend.inline-legend .fav-dot::before{
+    transform:translateY(-2px);
   }
 }

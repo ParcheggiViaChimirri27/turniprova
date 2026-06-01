@@ -42,7 +42,7 @@
         <section class="content-card">
           <div class="map-head">
             <div>
-              <h2>Mappa dei posti auto</h2>
+              <h2>Mappa posti</h2>
               <p id="mapDates">Periodo corrente</p>
             </div>
             <div class="view-toggle" aria-label="Cambia vista">
@@ -53,21 +53,26 @@
 
           <div id="freeParkingBanner" class="notice" hidden></div>
 
-          <div class="legend">
-            <span class="main-dot">Turno</span>
-            <span class="small-dot">Turnetto</span>
-            <span class="free-dot">Libero</span>
-            <span class="fav-dot">Preferito</span>
-          </div>
-
           <div id="gridPanel" class="view-panel">
             <div id="parkingGrid" class="parking-grid"></div>
+            <div class="legend inline-legend">
+              <span class="main-dot">Turno</span>
+              <span class="small-dot">Turnetto</span>
+              <span class="free-dot">Libero</span>
+              <span class="fav-dot">Preferito</span>
+            </div>
             <p class="hint">Tocca una card per aprire la mappa reale con il posto evidenziato.</p>
           </div>
 
           <div id="mapPanel" class="view-panel active">
             <div class="real-map-frame">
               <div id="realMap" class="real-map"></div>
+            </div>
+            <div class="legend inline-legend">
+              <span class="main-dot">Turno</span>
+              <span class="small-dot">Turnetto</span>
+              <span class="free-dot">Libero</span>
+              <span class="fav-dot">Preferito</span>
             </div>
             <p class="hint">La mappa è interattiva: tocca un posto per vedere l’assegnatario.</p>
           </div>
@@ -97,13 +102,12 @@
         </section>
 
 
-        <section class="search-card">
-          <label class="search-box" for="residentSearchInput"><span>⌕</span><input id="residentSearchInput" type="search" placeholder="Cerca condomino..." autocomplete="off" /></label>
-          <div id="residentSuggestions" class="search-suggestions" hidden></div>
-        </section>
-
         <section class="content-card">
-          <div class="map-head simple"><div><h2>Tutti i condomini</h2><p id="residentListDates">Periodo corrente</p></div></div>
+          <div class="map-head simple resident-title"><div><h2>Condomini</h2><p id="residentListDates">Periodo corrente</p></div></div>
+          <section class="search-card resident-inline-search">
+            <label class="search-box" for="residentSearchInput"><span>⌕</span><input id="residentSearchInput" type="search" placeholder="Cerca…" autocomplete="off" /></label>
+            <div id="residentSuggestions" class="search-suggestions" hidden></div>
+          </section>
           <div id="residentList" class="resident-list"></div>
         </section>
       </section>
@@ -120,7 +124,7 @@
         </section>
 
         <section class="content-card rights-card">
-          <div class="map-head simple"><div><h2>Elenco aventi diritto</h2><p id="rightsListDates">Tutti gli assegnatari per posto</p></div></div>
+          <div class="map-head simple"><div><h2>Assegnazioni</h2><p id="rightsListDates">Tutti gli assegnatari per posto</p></div></div>
           <div id="spotRightsList" class="rights-list"></div>
         </section>
       </section>
@@ -128,6 +132,12 @@
         <header class="hero compact">
           <img class="header-logo" src="via.webp" alt="VIA B. CHIMIRRI" />
         </header>
+
+        <section class="date-card favorites-date-card" aria-label="Selezione data preferiti">
+          <button id="favoritesPrevPeriodBtn" class="period-btn" type="button"><span>Precedente</span><strong>‹</strong></button>
+          <label class="date-input-wrap" for="favoritesDateInput"><span>Data</span><strong id="favoritesDateLabel" class="date-display">-</strong><input id="favoritesDateInput" type="date" /></label>
+          <button id="favoritesNextPeriodBtn" class="period-btn" type="button"><span>Prossimo</span><strong>›</strong></button>
+        </section>
 
         <section class="favorites-card favorites-page-card" aria-label="Preferiti">
           <div class="section-row">

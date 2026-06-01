@@ -1,5 +1,5 @@
 
-const DATA = {"groupA": [["TRAPASSO - AVERSA ENRICHETTA", 34], ["PUCCIO MARISA", 35], ["CARTOLANO - LOMBARDI", 17], ["LEONE", 30], ["LE PIANE", 37], ["MAZZUCA PATRIZIA", 31], ["ALESSIO CAVARRETTA", 33], ["SALERNI", 12], ["SANDULLI", 11], ["PRESTA", 18], ["ROMITI - MONTILLA", 19], ["SANZI", 36], ["MANGONE", 14], ["CAMPENNÌ - POLITO", 20], ["PISTOIA - GEMELLI", 13], ["MILANO", 29], ["RICCI DANTE", 32], ["AGOSTO - PIANO RIALZ.", 28], ["JIRILLO LUIGI", 21], ["STAIANO", 22], ["DEMASI ANTONINO INT. 8", 27], ["RICCI ANGELO", 8], ["MARASCO [B]", 26], ["DEMASI - SCALA B PIANO 2", 25], ["BOVIO", 10], ["POLITI", 23], ["MIRIGLIANI ROSA", 24], ["CATRAMBONE", 16]], "groupB": [["AGOSTO VIOLETTA 3° P.", 34], ["SANZI", 36], ["SQUILLACIOTI - VERALDI", 2], ["PILÒ", 35], ["ELIA", 22], ["AVERSA ENRICHETTA", 29], ["DEMASI FRANCESCO", 21], ["BARBUTO", 30], ["D'AGOSTINO", 31], ["RICCELLI", 26], ["AVERSA - GEMELLI", 28], ["MANNO", 24], ["VARANO", 27], ["LUCENTE", 25], ["COLACINO", 23], ["CIANFLONE", 32], ["MANCUSO", 20], ["MIRIGLIANI RAFFAELE", 33], ["AGOSTO SEMINT.", 17], ["EREDI PUCCIO ANGELA", 9], ["EREDI SPADARO", 19], ["SELVAGGIO", 37], ["JIRILLO QUINTINO", 18], ["RUSSO", 11], ["PISTOIA FRANCESCO", 15], ["DEMASI INT. 6", 12], ["MARASCO [C]", 8], ["CATRAMBONE", 16]], "smallGroups": {"A1": [["TRAPASSO - AVERSA ENRICHETTA", 5], ["PUCCIO MARISA", 10], ["CARTOLANO - LOMBARDI", 14], ["LEONE", 3], ["LE PIANE", 13], ["MAZZUCA PATRIZIA", 4], ["ALESSIO CAVARRETTA", 1]], "A2": [["SALERNI", 10], ["SANDULLI", 1], ["PRESTA", 5], ["ROMITI - MONTILLA", 14], ["SANZI", 13], ["MANGONE", 4], ["CAMPENNÌ - POLITO", 3]], "A3": [["PISTOIA - GEMELLI", 13], ["MILANO", 14], ["RICCI DANTE", 1], ["AGOSTO - PIANO RIALZ.", 10], ["JIRILLO LUIGI", 5], ["STAIANO", 4], ["DEMASI ANTONINO INT. 8", 3]], "A4": [["RICCI ANGELO", 1], ["MARASCO [B]", 5], ["DEMASI - SCALA B PIANO 2", 4], ["BOVIO", 14], ["POLITI", 13], ["MIRIGLIANI ROSA", 10], ["PORTIERE", 3]], "B1": [["AGOSTO VIOLETTA 3° P.", 5], ["SANZI", 1], ["SQUILLACIOTI - VERALDI", 3], ["PILÒ", 9], ["ELIA", 2], ["AVERSA ENRICHETTA", 4], ["DEMASI FRANCESCO", 15]], "B2": [["BARBUTO", 1], ["D'AGOSTINO", 15], ["RICCELLI", 2], ["AVERSA - GEMELLI", 4], ["MANNO", 3], ["VARANO", 9], ["LUCENTE", 5]], "B3": [["COLACINO", 15], ["CIANFLONE", 9], ["MANCUSO", 1], ["MIRIGLIANI RAFFAELE", 3], ["AGOSTO SEMINT.", 2], ["EREDI PUCCIO ANGELA", 5], ["EREDI SPADARO", 4]], "B4": [["SELVAGGIO", 15], ["JIRILLO QUINTINO", 3], ["RUSSO", 1], ["PISTOIA FRANCESCO", 4], ["DEMASI INT. 6", 5], ["MARASCO [C]", 9], ["PORTIERE", 2]]}, "cycle": [["A", "B3"], ["A", "B4"], ["B", "A3"], ["A", "B1"], ["B", "A4"], ["B", "A1"], ["A", "B2"], ["A", "B3"], ["B", "A2"], ["B", "A3"], ["A", "B4"], ["B", "A4"], ["A", "B1"], ["A", "B2"], ["B", "A1"], ["B", "A2"]], "periodTemplates": [["09-01", "10-08"], ["10-09", "11-15"], ["11-16", "12-23"], ["12-24", "01-31"], ["02-01", "03-09"], ["03-10", "04-15"], ["04-16", "05-23"], ["05-24", "06-30"], ["09-01", "10-08"], ["10-09", "11-15"], ["11-16", "12-23"], ["12-24", "01-31"], ["02-01", "03-09"], ["03-10", "04-15"], ["04-16", "05-23"], ["05-24", "06-30"]], "realSpotPositions": [[1, 15.43, 13.93], [2, 14.94, 19.0], [3, 14.45, 24.2], [4, 14.16, 29.2], [5, 13.77, 34.3], [8, 11.62, 52.5], [9, 11.52, 57.72], [10, 11.9, 77.71], [11, 25.27, 87.17], [12, 25.27, 91.6], [13, 33.58, 91.6], [14, 33.58, 87.17], [15, 47.0, 82.0], [16, 47.0, 76.2], [17, 46.47, 64.77], [18, 46.47, 59.54], [19, 46.47, 54.51], [20, 46.47, 49.71], [21, 46.07, 39.7], [22, 46.07, 35.09], [23, 46.07, 30.0], [24, 46.07, 25.15], [25, 46.07, 20.85], [26, 62.83, 25.55], [27, 62.83, 30.0], [28, 63.83, 35.09], [29, 63.83, 39.7], [30, 63.83, 44.65], [31, 64.0, 49.71], [32, 64.84, 54.51], [33, 64.84, 59.54], [34, 64.84, 64.77], [35, 65.8, 76.2], [36, 65.9, 82.0], [37, 66.0, 88.05]]};
+const DATA = {"groupA": [["TRAPASSO - AVERSA ENRICHETTA", 34], ["PUCCIO MARISA", 35], ["CARTOLANO - LOMBARDI", 17], ["LEONE", 30], ["LE PIANE", 37], ["MAZZUCA PATRIZIA", 31], ["ALESSIO CAVARRETTA", 33], ["SALERNI", 12], ["SANDULLI", 11], ["PRESTA", 18], ["ROMITI - MONTILLA", 19], ["SANZI", 36], ["MANGONE", 14], ["CAMPENNÌ - POLITO", 20], ["PISTOIA - GEMELLI", 13], ["MILANO", 29], ["RICCI DANTE", 32], ["AGOSTO - PIANO RIALZ.", 28], ["JIRILLO LUIGI", 21], ["STAIANO", 22], ["DEMASI ANTONINO INT. 8", 27], ["RICCI ANGELO", 8], ["MARASCO [B]", 26], ["DEMASI - SCALA B PIANO 2", 25], ["BOVIO", 10], ["POLITI", 23], ["MIRIGLIANI ROSA", 24], ["CATRAMBONE", 16]], "groupB": [["AGOSTO VIOLETTA 3° P.", 34], ["SANZI", 36], ["SQUILLACIOTI - VERALDI", 2], ["PILÒ", 35], ["ELIA", 22], ["AVERSA ENRICHETTA", 29], ["DEMASI FRANCESCO", 21], ["BARBUTO", 30], ["D'AGOSTINO", 31], ["RICCELLI", 26], ["AVERSA - GEMELLI", 28], ["MANNO", 24], ["VARANO", 27], ["LUCENTE", 25], ["COLACINO", 23], ["CIANFLONE", 32], ["MANCUSO", 20], ["MIRIGLIANI RAFFAELE", 33], ["AGOSTO SEMINT.", 17], ["EREDI PUCCIO ANGELA", 9], ["EREDI SPADARO", 19], ["SELVAGGIO", 37], ["JIRILLO QUINTINO", 18], ["RUSSO", 11], ["PISTOIA FRANCESCO", 15], ["DEMASI INT. 6", 12], ["MARASCO [C]", 8], ["CATRAMBONE", 16]], "smallGroups": {"A1": [["TRAPASSO - AVERSA ENRICHETTA", 5], ["PUCCIO MARISA", 10], ["CARTOLANO - LOMBARDI", 14], ["LEONE", 3], ["LE PIANE", 13], ["MAZZUCA PATRIZIA", 4], ["ALESSIO CAVARRETTA", 1]], "A2": [["SALERNI", 10], ["SANDULLI", 1], ["PRESTA", 5], ["ROMITI - MONTILLA", 14], ["SANZI", 13], ["MANGONE", 4], ["CAMPENNÌ - POLITO", 3]], "A3": [["PISTOIA - GEMELLI", 13], ["MILANO", 14], ["RICCI DANTE", 1], ["AGOSTO - PIANO RIALZ.", 10], ["JIRILLO LUIGI", 5], ["STAIANO", 4], ["DEMASI ANTONINO INT. 8", 3]], "A4": [["RICCI ANGELO", 1], ["MARASCO [B]", 5], ["DEMASI - SCALA B PIANO 2", 4], ["BOVIO", 14], ["POLITI", 13], ["MIRIGLIANI ROSA", 10], ["PORTIERE", 3]], "B1": [["AGOSTO VIOLETTA 3° P.", 5], ["SANZI", 1], ["SQUILLACIOTI - VERALDI", 3], ["PILÒ", 9], ["ELIA", 2], ["AVERSA ENRICHETTA", 4], ["DEMASI FRANCESCO", 15]], "B2": [["BARBUTO", 1], ["D'AGOSTINO", 15], ["RICCELLI", 2], ["AVERSA - GEMELLI", 4], ["MANNO", 3], ["VARANO", 9], ["LUCENTE", 5]], "B3": [["COLACINO", 15], ["CIANFLONE", 9], ["MANCUSO", 1], ["MIRIGLIANI RAFFAELE", 3], ["AGOSTO SEMINT.", 2], ["EREDI PUCCIO ANGELA", 5], ["EREDI SPADARO", 4]], "B4": [["SELVAGGIO", 15], ["JIRILLO QUINTINO", 3], ["RUSSO", 1], ["PISTOIA FRANCESCO", 4], ["DEMASI INT. 6", 5], ["MARASCO [C]", 9], ["PORTIERE", 2]]}, "cycle": [["A", "B3"], ["A", "B4"], ["B", "A3"], ["A", "B1"], ["B", "A4"], ["B", "A1"], ["A", "B2"], ["A", "B3"], ["B", "A2"], ["B", "A3"], ["A", "B4"], ["B", "A4"], ["A", "B1"], ["A", "B2"], ["B", "A1"], ["B", "A2"]], "periodTemplates": [["09-01", "10-08"], ["10-09", "11-15"], ["11-16", "12-23"], ["12-24", "01-31"], ["02-01", "03-09"], ["03-10", "04-15"], ["04-16", "05-23"], ["05-24", "06-30"], ["09-01", "10-08"], ["10-09", "11-15"], ["11-16", "12-23"], ["12-24", "01-31"], ["02-01", "03-09"], ["03-10", "04-15"], ["04-16", "05-23"], ["05-24", "06-30"]], "realSpotPositions": [[1, 15.43, 13.93], [2, 14.94, 19.0], [3, 14.45, 24.2], [4, 14.16, 29.2], [5, 13.77, 34.3], [8, 11.62, 52.5], [9, 11.52, 57.72], [10, 11.9, 77.71], [13, 25.27, 87.17], [11, 25.27, 91.6], [12, 33.58, 91.6], [14, 33.58, 87.17], [15, 47.0, 82.0], [16, 47.0, 76.2], [17, 46.47, 64.77], [18, 46.47, 59.54], [19, 46.47, 54.51], [20, 46.47, 49.71], [21, 46.07, 39.7], [22, 46.07, 35.09], [23, 46.07, 30.0], [24, 46.07, 25.15], [25, 46.07, 20.85], [26, 62.83, 25.55], [27, 62.83, 30.0], [28, 63.83, 35.09], [29, 63.83, 39.7], [30, 63.83, 44.65], [31, 64.0, 49.71], [32, 64.84, 54.51], [33, 64.84, 59.54], [34, 64.84, 64.77], [35, 65.8, 76.2], [36, 65.9, 82.0], [37, 66.0, 88.05]]};
 const byId = id => document.getElementById(id);
 const SPOTS = Array.from({length:37},(_,i)=>i+1).filter(n=>n!==6 && n!==7);
 const RESIDENT_SCALES = {
@@ -73,7 +73,10 @@ function getResidentScale(name){ return RESIDENT_SCALES[normalizeName(name)] || 
 function toInputDate(date){ return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
 function fromInputDate(value){ const [y,m,d] = String(value).split('-').map(Number); return new Date(y,m-1,d); }
 function fmt(date){ return date.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'}); }
-function fullFmt(date){ return date.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'}).toUpperCase(); }
+function fullFmt(date){
+  const months=['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
 function daysBetween(a,b){ return Math.max(0, Math.ceil((stripTime(b)-stripTime(a))/86400000)); }
 function isSameDay(a,b){ a=stripTime(a); b=stripTime(b); return a.getTime()===b.getTime(); }
 function makeDate(year, mmdd){ const [m,d]=mmdd.split('-').map(Number); return new Date(year,m-1,d); }
@@ -443,6 +446,8 @@ function openMapPopup(targetId, spot, keepHighlight=false){
   button.classList.add('selected');
   if(keepHighlight) button.classList.add('highlight');
   const o = occupantLabel(spot);
+  const isNamedResident = o.name && !['LIBERO','PARCHEGGIO LIBERO'].includes(normalizeName(o.name).toUpperCase());
+  popup.setAttribute('style', isNamedResident ? residentColorStyle(o.name) : '');
   popup.innerHTML = `<strong>Posto ${spot}</strong><span>${escapeHtml(o.name)}</span><small>${escapeHtml(o.label)} ${isFavoriteResident(o.name) ? '★' : ''}</small>`;
   const x = parseFloat(button.style.left), y = parseFloat(button.style.top);
   const leftSideSpot = [1,2,3,4,5,8,9,10].includes(Number(spot));
@@ -452,26 +457,13 @@ function openMapPopup(targetId, spot, keepHighlight=false){
   popup.classList.toggle('left-edge', !leftSideSpot && x < 24);
   popup.classList.toggle('right-edge', !leftSideSpot && x > 76);
 
-  // I posti sul lato sinistro della mappa sono vicini al bordo.
-  // Per 1 e 2 uso la stessa posizione di popup del posto 3, così il fumetto
-  // non esce in alto dallo schermo su iPhone/Safari.
-  const referenceLeftSpot = DATA.realSpotPositions.find(([n]) => Number(n) === 3);
-  const refX = referenceLeftSpot ? Number(referenceLeftSpot[1]) : x;
-  const refY = referenceLeftSpot ? Number(referenceLeftSpot[2]) : y;
+  const left = leftSideSpot
+    ? x
+    : (x < 24 ? Math.min(x + 6, 24) : x > 76 ? Math.max(x - 6, 76) : x);
 
-  const left = [1,2].includes(Number(spot))
-    ? refX
-    : leftSideSpot
-      ? x
-      : (x < 24 ? Math.min(x + 6, 24) : x > 76 ? Math.max(x - 6, 76) : x);
-
-  // Per i posti sul lato sinistro il fumetto deve stare ACCANTO al posto,
-  // non troppo sopra. I posti 1 e 2 ereditano la stessa altezza del posto 3.
-  const top = [1,2].includes(Number(spot))
-    ? refY
-    : leftSideSpot
-      ? y
-      : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2, 8));
+  const top = leftSideSpot
+    ? y
+    : (useBelow ? Math.min(y + 7, 92) : Math.max(y - 2, 8));
 
   popup.style.left = `${left}%`;
   popup.style.top = `${top}%`;
@@ -552,7 +544,7 @@ function renderRights(){
     const pills = (spotRights.get(spot) || []).map(name=>{
       const active = activeName && normalizeName(name) === activeName;
       const fav = isFavoriteResident(name);
-      return `<span class="name-pill ${active ? `active-${occ.type}` : ''} ${fav ? 'favorite-name' : ''}">${fav ? '<span class="inline-star">★</span>' : ''}${escapeHtml(name)}</span>`;
+      return `<span class="name-pill ${active ? `active-${occ.type}` : ''} ">${fav ? '<span class="inline-star">★</span>' : ''}${escapeHtml(name)}</span>`;
     }).join('');
     return `<article class="right-row"><div class="right-num">${spot}</div><div class="right-names">${pills || '<span class="name-pill">Nessun avente diritto</span>'}</div></article>`;
   }).join('');
@@ -561,6 +553,7 @@ function renderRights(){
 function renderPeriodTexts(){
   const text = isFreeParkingPeriod(selectedDate) ? 'Parcheggio libero' : periodDateText(selectedPeriod);
   const mapDates = byId('mapDates'); if(mapDates) mapDates.textContent = text;
+  updateMapTitle();
   const banner = byId('freeParkingBanner'); if(banner){ banner.hidden = !isFreeParkingPeriod(selectedDate); banner.textContent = freeParkingText(selectedDate.getFullYear()); }
 }
 function renderAllDynamic(){ updateCountdowns(); renderPeriodTexts(); renderFavorites(); renderParkingGrid(); renderRealMap('realMap'); renderResidents(); renderRights(); }
@@ -576,7 +569,19 @@ function goToPeriod(direction){
   else { target = new Date(selectedDate); target.setDate(target.getDate() + (direction === 'next' ? 1 : -1)); }
   setDate(skipFree(target, direction === 'next' ? 1 : -1));
 }
-function setView(view){ currentView=view; byId('gridPanel').classList.toggle('active', view==='grid'); byId('mapPanel').classList.toggle('active', view==='map'); byId('gridViewBtn').classList.toggle('active', view==='grid'); byId('realViewBtn').classList.toggle('active', view==='map'); if(view==='map') renderRealMap('realMap'); }
+function updateMapTitle(){
+  const title = document.querySelector('#homeSection .map-head h2');
+  if(title) title.textContent = currentView === 'grid' ? 'Griglia posti' : 'Mappa posti';
+}
+function setView(view){
+  currentView=view;
+  byId('gridPanel').classList.toggle('active', view==='grid');
+  byId('mapPanel').classList.toggle('active', view==='map');
+  byId('gridViewBtn').classList.toggle('active', view==='grid');
+  byId('realViewBtn').classList.toggle('active', view==='map');
+  updateMapTitle();
+  if(view==='map') renderRealMap('realMap');
+}
 
 function openDateModal(){
   const modal = byId('datePickerModal');
@@ -585,10 +590,12 @@ function openDateModal(){
   input.value = toInputDate(selectedDate);
   modal.classList.add('open');
   modal.setAttribute('aria-hidden','false');
-  setTimeout(()=>{
-    try{ input.showPicker ? input.showPicker() : input.focus(); }
-    catch(_){ input.focus(); }
-  }, 80);
+  // setTimeout(()=>{
+  //  try{ input.showPicker ? input.showPicker() : input.focus(); }
+  //  catch(_){ input.focus(); }
+  // }, 80);
+  
+  
 }
 function closeDateModal(){
   const modal = byId('datePickerModal');
@@ -615,16 +622,17 @@ function bindEvents(){
     }
   });
   byId('modalDateInput')?.addEventListener('change', e=>{ if(e.target.value) setDate(fromInputDate(e.target.value)); });
+  byId('modalDateInput')?.addEventListener('click', e=>{ e.stopPropagation();try{e.target.showPicker?.();}catch(_){}});
   byId('modalTodayBtn')?.addEventListener('click', ()=>{ setDate(new Date()); const input=byId('modalDateInput'); if(input) input.value=toInputDate(selectedDate); });
   byId('modalApplyDateBtn')?.addEventListener('click', applyModalDate);
   byId('dateModalClose')?.addEventListener('click', closeDateModal);
   byId('datePickerModal')?.addEventListener('click', e=>{ if(e.target.id==='datePickerModal') closeDateModal(); });
-  ['homeNextPeriodBtn','residentNextPeriodBtn','rightsNextPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('next')));
-  ['homePrevPeriodBtn','residentPrevPeriodBtn','rightsPrevPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('prev')));
+  ['homeNextPeriodBtn','residentNextPeriodBtn','rightsNextPeriodBtn','favoritesNextPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('next')));
+  ['homePrevPeriodBtn','residentPrevPeriodBtn','rightsPrevPeriodBtn','favoritesPrevPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('prev')));
   byId('gridViewBtn').addEventListener('click',()=>setView('grid')); byId('realViewBtn').addEventListener('click',()=>setView('map'));
   byId('clearFavoritesBtn').addEventListener('click',()=>{ favorites=[]; saveFavorites(); renderAllDynamic(); });
-  byId('residentSearchInput').addEventListener('input', ()=>{ renderResidents(); renderResidentSuggestions(); });
-  byId('residentSearchInput').addEventListener('focus', renderResidentSuggestions);
+  byId('residentSearchInput').addEventListener('input', ()=>{ closeResidentSuggestions(); renderResidents(); });
+  byId('residentSearchInput').addEventListener('focus', closeResidentSuggestions);
   byId('spotModalClose').addEventListener('click', closeSpotModal); byId('spotModal').addEventListener('click', e=>{ if(e.target.id==='spotModal') closeSpotModal(); });
   byId('residentModalClose')?.addEventListener('click', closeResidentModal); byId('residentModal')?.addEventListener('click', e=>{ if(e.target.id==='residentModal') closeResidentModal(); });
   document.addEventListener('click', e=>{
