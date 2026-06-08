@@ -748,6 +748,8 @@ const PDF_COORDS = {
   35:{x:67.7, numberY:76.3}, 36:{x:67.7, numberY:82.1}, 37:{x:67.7, numberY:88.3}
 };
 let pdfSelectedPeriodKey = null;
+let pdfSelectedMode = 'period';
+let pdfSelectedYear = new Date().getFullYear();
 let pdfBaseImagePromise = null;
 function loadPdfBaseImage(){
   if(pdfBaseImagePromise) return pdfBaseImagePromise;
@@ -780,18 +782,91 @@ function periodFromPdfSelect(){
   const key = select?.value || pdfSelectedPeriodKey;
   return periods.find(p=>pdfPeriodKey(p)===key) || selectedPeriod || periods[0] || null;
 }
+function getPdfMode(){
+  return byId('pdfModeSelect')?.value || pdfSelectedMode || 'period';
+}
+function pdfPeriodsForYear(year){
+  const y = Number(year);
+  const from = new Date(y, 0, 1);
+  const to = new Date(y, 11, 31);
+  const candidates = [];
+  for(let start = y - 5; start <= y + 3; start++){
+    if(start % 2 !== 0) candidates.push(...buildPeriodsForCycle(start));
+  }
+  const seen = new Set();
+  return candidates
+    .filter(p => p.start <= to && p.end >= from)
+    .filter(p => {
+      const key = `${toInputDate(p.start)}_${toInputDate(p.end)}_${p.main}_${p.small}`;
+      if(seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a,b)=>a.start-b.start);
+}
+function pdfAvailableYears(){
+  const base = selectedDate?.getFullYear?.() || new Date().getFullYear();
+  const years = [];
+  for(let y = base - 3; y <= base + 5; y++) years.push(y);
+  return years;
+}
+function periodForPdfMode(){
+  const mode = getPdfMode();
+  if(mode === 'today') return findPeriodByDate(stripTime(new Date()));
+  if(mode === 'year') return pdfPeriodsForYear(pdfSelectedYear)[0] || null;
+  return periodFromPdfSelect();
+}
+function updatePdfModeVisibility(){
+  const mode = getPdfMode();
+  const periodRow = byId('pdfPeriodRow');
+  const yearRow = byId('pdfYearRow');
+  if(periodRow) periodRow.hidden = mode !== 'period';
+  if(yearRow) yearRow.hidden = mode !== 'year';
+  const btn = byId('downloadPdfBtn');
+  if(btn) btn.textContent = mode === 'year' ? 'Scarica PDF anno' : 'Scarica PDF';
+}
 function renderPdfControls(){
-  const select = byId('pdfPeriodSelect');
-  if(!select) return;
-  const periods = pdfAvailablePeriods();
-  const current = selectedPeriod || periods.find(p=>selectedDate>=p.start && selectedDate<=p.end) || periods[0];
-  const wantedKey = pdfSelectedPeriodKey || (current ? pdfPeriodKey(current) : '');
-  select.innerHTML = periods.map(p=>`<option value="${pdfPeriodKey(p)}">${periodDateText(p)} · ${p.main} + ${p.small}</option>`).join('');
-  select.value = periods.some(p=>pdfPeriodKey(p)===wantedKey) ? wantedKey : (current ? pdfPeriodKey(current) : '');
-  pdfSelectedPeriodKey = select.value;
+  const periodSelect = byId('pdfPeriodSelect');
+  const modeSelect = byId('pdfModeSelect');
+  const yearSelect = byId('pdfYearSelect');
+
+  if(modeSelect){
+    modeSelect.value = pdfSelectedMode || 'period';
+    pdfSelectedMode = modeSelect.value;
+  }
+
+  if(periodSelect){
+    const periods = pdfAvailablePeriods();
+    const current = selectedPeriod || periods.find(p=>selectedDate>=p.start && selectedDate<=p.end) || periods[0];
+    const wantedKey = pdfSelectedPeriodKey || (current ? pdfPeriodKey(current) : '');
+    periodSelect.innerHTML = periods.map(p=>`<option value="${pdfPeriodKey(p)}">${periodDateText(p)} · ${p.main} + ${p.small}</option>`).join('');
+    periodSelect.value = periods.some(p=>pdfPeriodKey(p)===wantedKey) ? wantedKey : (current ? pdfPeriodKey(current) : '');
+    pdfSelectedPeriodKey = periodSelect.value;
+  }
+
+  if(yearSelect){
+    const years = pdfAvailableYears();
+    if(!years.includes(Number(pdfSelectedYear))) pdfSelectedYear = selectedDate.getFullYear();
+    yearSelect.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join('');
+    yearSelect.value = String(pdfSelectedYear);
+  }
+
+  updatePdfModeVisibility();
+
   const label = byId('pdfPeriodText');
-  const p = periodFromPdfSelect();
-  if(label) label.textContent = p ? `${periodDateText(p)} · Turno ${p.main} · Turnetto ${p.small}` : 'Nessun periodo selezionato';
+  const mode = getPdfMode();
+  if(label){
+    if(mode === 'year'){
+      const periods = pdfPeriodsForYear(pdfSelectedYear);
+      label.textContent = `Anno ${pdfSelectedYear} · ${periods.length} pagine PDF`;
+    } else if(mode === 'today'){
+      const p = findPeriodByDate(stripTime(new Date()));
+      label.textContent = p ? `Periodo di oggi · ${periodDateText(p)} · Turno ${p.main} · Turnetto ${p.small}` : 'Oggi non rientra in un periodo di turnazione';
+    } else {
+      const p = periodFromPdfSelect();
+      label.textContent = p ? `${periodDateText(p)} · Turno ${p.main} · Turnetto ${p.small}` : 'Nessun periodo selezionato';
+    }
+  }
   setPdfStatus('');
   renderPdfPreview();
 }
@@ -878,7 +953,7 @@ async function drawPdfCanvas(canvas, period){
 async function renderPdfPreview(){
   const canvas = byId('pdfPreviewCanvas');
   if(!canvas) return;
-  try{ await drawPdfCanvas(canvas, periodFromPdfSelect()); }
+  try{ await drawPdfCanvas(canvas, periodForPdfMode()); }
   catch(err){ console.warn('Anteprima PDF non disponibile', err); }
 }
 function bytesFromDataUrl(dataUrl){
@@ -900,8 +975,10 @@ function concatBytes(parts){
   parts.forEach(p=>{ out.set(p, offset); offset += p.length; });
   return out;
 }
-function makePdfFromJpegDataUrl(jpegDataUrl, pageW=595.28, pageH=841.89){
-  const imgBytes = bytesFromDataUrl(jpegDataUrl);
+function makePdfFromJpegDataUrls(jpegDataUrls, pageW=595.28, pageH=841.89){
+  const urls = Array.isArray(jpegDataUrls) ? jpegDataUrls : [jpegDataUrls];
+  const images = urls.map(bytesFromDataUrl);
+  const pageCount = images.length;
   const parts = [];
   const offsets = [];
   let length = 0;
@@ -909,20 +986,38 @@ function makePdfFromJpegDataUrl(jpegDataUrl, pageW=595.28, pageH=841.89){
   const addObj = str => { offsets.push(length); pushAscii(str); };
 
   pushAscii('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+
+  const pagesObjId = 2;
+  const pageObjIds = images.map((_, i) => 3 + i * 3);
   addObj('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
-  addObj('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
-  addObj(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`);
-  offsets.push(length);
-  pushAscii(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${PDF_PAGE.w} /Height ${PDF_PAGE.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgBytes.length} >>\nstream\n`);
-  parts.push(imgBytes); length += imgBytes.length;
-  pushAscii('\nendstream\nendobj\n');
-  const content = `q\n${pageW} 0 0 ${pageH} 0 0 cm\n/Im0 Do\nQ\n`;
-  addObj(`5 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
+  addObj(`2 0 obj\n<< /Type /Pages /Kids [${pageObjIds.map(id=>`${id} 0 R`).join(' ')}] /Count ${pageCount} >>\nendobj\n`);
+
+  images.forEach((imgBytes, i)=>{
+    const pageId = 3 + i * 3;
+    const imageId = pageId + 1;
+    const contentId = pageId + 2;
+    const imName = `Im${i}`;
+
+    addObj(`${pageId} 0 obj\n<< /Type /Page /Parent ${pagesObjId} 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /XObject << /${imName} ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>\nendobj\n`);
+
+    offsets.push(length);
+    pushAscii(`${imageId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${PDF_PAGE.w} /Height ${PDF_PAGE.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgBytes.length} >>\nstream\n`);
+    parts.push(imgBytes); length += imgBytes.length;
+    pushAscii('\nendstream\nendobj\n');
+
+    const content = `q\n${pageW} 0 0 ${pageH} 0 0 cm\n/${imName} Do\nQ\n`;
+    addObj(`${contentId} 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
+  });
+
   const xrefPos = length;
-  let xref = 'xref\n0 6\n0000000000 65535 f \n';
+  const objectCount = 2 + pageCount * 3;
+  let xref = `xref\n0 ${objectCount + 1}\n0000000000 65535 f \n`;
   offsets.forEach(o=>{ xref += `${String(o).padStart(10,'0')} 00000 n \n`; });
-  pushAscii(xref + `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
+  pushAscii(xref + `trailer\n<< /Size ${objectCount + 1} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
   return new Blob([concatBytes(parts)], {type:'application/pdf'});
+}
+function makePdfFromJpegDataUrl(jpegDataUrl, pageW=595.28, pageH=841.89){
+  return makePdfFromJpegDataUrls([jpegDataUrl], pageW, pageH);
 }
 function setPdfStatus(message){
   const el = byId('pdfDownloadStatus');
@@ -950,15 +1045,36 @@ async function saveBlob(blob, filename){
 async function downloadSelectedPdf(){
   const btn = byId('downloadPdfBtn');
   try{
-    const period = periodFromPdfSelect();
-    if(!period){ alert('Nessun periodo disponibile.'); return; }
+    const mode = getPdfMode();
     if(btn) btn.disabled = true;
+
+    if(mode === 'year'){
+      const year = Number(byId('pdfYearSelect')?.value || pdfSelectedYear || new Date().getFullYear());
+      pdfSelectedYear = year;
+      const periods = pdfPeriodsForYear(year);
+      if(!periods.length){ alert('Nessun periodo disponibile per questo anno.'); return; }
+      setPdfStatus(`Creo il PDF annuale (${periods.length} pagine)...`);
+      const pages = [];
+      for(const period of periods){
+        const canvas = document.createElement('canvas');
+        await drawPdfCanvas(canvas, period);
+        pages.push(canvas.toDataURL('image/jpeg', .96));
+      }
+      const blob = makePdfFromJpegDataUrls(pages);
+      await saveBlob(blob, `parcheggi_anno_${year}.pdf`);
+      setPdfStatus(`PDF annuale pronto: ${periods.length} pagine.`);
+      return;
+    }
+
+    const period = mode === 'today' ? findPeriodByDate(stripTime(new Date())) : periodFromPdfSelect();
+    if(!period){ alert('Nessun periodo disponibile.'); return; }
     setPdfStatus('Creo il PDF...');
     const canvas = document.createElement('canvas');
     await drawPdfCanvas(canvas, period);
     const jpeg = canvas.toDataURL('image/jpeg', .96);
     const blob = makePdfFromJpegDataUrl(jpeg);
-    const filename = `parcheggi_${toInputDate(period.start)}_${toInputDate(period.end)}.pdf`;
+    const prefix = mode === 'today' ? 'parcheggi_oggi' : 'parcheggi';
+    const filename = `${prefix}_${toInputDate(period.start)}_${toInputDate(period.end)}.pdf`;
     await saveBlob(blob, filename);
     setPdfStatus('PDF pronto. Se non parte il download, controlla la scheda/apertura del browser.');
   }catch(err){
@@ -992,7 +1108,9 @@ function bindEvents(){
   ['homePrevPeriodBtn','residentPrevPeriodBtn','rightsPrevPeriodBtn','favoritesPrevPeriodBtn','pdfPrevPeriodBtn'].forEach(id=>byId(id)?.addEventListener('click',()=>goToPeriod('prev')));
   byId('gridViewBtn').addEventListener('click',()=>setView('grid')); byId('realViewBtn').addEventListener('click',()=>setView('map'));
   byId('clearFavoritesBtn').addEventListener('click',()=>{ favorites=[]; saveFavorites(); renderFavorites(); renderAllDynamic(); });
+  byId('pdfModeSelect')?.addEventListener('change', e=>{ pdfSelectedMode = e.target.value; renderPdfControls(); });
   byId('pdfPeriodSelect')?.addEventListener('change', e=>{ pdfSelectedPeriodKey = e.target.value; renderPdfControls(); });
+  byId('pdfYearSelect')?.addEventListener('change', e=>{ pdfSelectedYear = Number(e.target.value); renderPdfControls(); });
   byId('downloadPdfBtn')?.addEventListener('click', downloadSelectedPdf);
   byId('residentSearchInput').addEventListener('input', ()=>{ closeResidentSuggestions(); renderResidents(); });
   byId('residentSearchInput').addEventListener('focus', closeResidentSuggestions);
