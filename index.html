@@ -11,12 +11,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Parcheggi" />
-  <link rel="manifest" href="manifest.webmanifest?v=pdf3" />
-  <link rel="icon" href="icon.svg?v=pdf3" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest?v=pdf1" />
+  <link rel="icon" href="icon.svg?v=pdf1" type="image/svg+xml" />
   <link rel="preload" href="mappa-posti-numeri.webp" as="image" type="image/webp" />
   <link rel="preload" href="via.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="style.css?v=pdf3" />
-  <link rel="stylesheet" href="mobile_override.css?v=pdf3" />
+  <link rel="stylesheet" href="style.css?v=pdf1" />
+  <link rel="stylesheet" href="mobile_override.css?v=pdf1" />
 </head>
 <body>
   <div class="app-shell">
@@ -147,23 +147,8 @@
         <section class="content-card pdf-card">
           <div class="map-head simple"><div><h2 id="pdfTitle">Download PDF</h2><p id="pdfPeriodText">Seleziona un periodo e scarica la planimetria</p></div></div>
           <div class="pdf-controls">
-            <label class="pdf-select-label" for="pdfModeSelect">Tipo download</label>
-            <select id="pdfModeSelect" class="pdf-period-select">
-              <option value="today">Periodo di oggi</option>
-              <option value="period" selected>Singolo periodo</option>
-              <option value="year">Anno intero</option>
-            </select>
-
-            <div id="pdfPeriodRow" class="pdf-control-row">
-              <label class="pdf-select-label" for="pdfPeriodSelect">Periodo</label>
-              <select id="pdfPeriodSelect" class="pdf-period-select"></select>
-            </div>
-
-            <div id="pdfYearRow" class="pdf-control-row" hidden>
-              <label class="pdf-select-label" for="pdfYearSelect">Anno</label>
-              <select id="pdfYearSelect" class="pdf-period-select"></select>
-            </div>
-
+            <label class="pdf-select-label" for="pdfPeriodSelect">Periodo</label>
+            <select id="pdfPeriodSelect" class="pdf-period-select"></select>
             <button id="downloadPdfBtn" class="pdf-download-btn" type="button">Scarica PDF</button>
             <p id="pdfDownloadStatus" class="pdf-download-status" aria-live="polite"></p>
           </div>

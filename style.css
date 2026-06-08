@@ -2689,7 +2689,6 @@ button[id$="NextPeriodBtn"] strong{
   gap:12px;
   padding:18px;
 }
-.pdf-control-row{display:grid;gap:8px;}
 .pdf-select-label{
   font-size:13px;
   font-weight:950;

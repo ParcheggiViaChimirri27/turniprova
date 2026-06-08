@@ -1,4 +1,4 @@
-const CACHE_NAME = "parcheggi-pdf-v3-anno-multipagina";
+const CACHE_NAME = "parcheggi-pdf-fix-dataurl-v2";
 const ASSETS = [
   "./",
   "./index.html",
