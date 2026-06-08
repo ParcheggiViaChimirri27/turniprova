@@ -35,6 +35,13 @@ self.addEventListener("activate", event => {
   serve sempre i file aggiornati quando c'è connessione.
   Se il telefono è offline, usa la cache.
 */
+
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 

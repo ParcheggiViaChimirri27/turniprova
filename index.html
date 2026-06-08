@@ -11,12 +11,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Parcheggi" />
-  <link rel="manifest" href="manifest.webmanifest?v=pdf4" />
-  <link rel="icon" href="icon.svg?v=pdf4" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest?v=pdf6" />
+  <link rel="icon" href="icon.svg?v=pdf6" type="image/svg+xml" />
   <link rel="preload" href="mappa-posti-numeri.webp" as="image" type="image/webp" />
   <link rel="preload" href="via.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="style.css?v=pdf4" />
-  <link rel="stylesheet" href="mobile_override.css?v=pdf4" />
+  <link rel="stylesheet" href="style.css?v=pdf6" />
+  <link rel="stylesheet" href="mobile_override.css?v=pdf6" />
 </head>
 <body>
   <div class="app-shell">
@@ -177,9 +177,6 @@
 
             <p id="pdfDownloadStatus" class="pdf-download-status" aria-live="polite"></p>
           </div>
-          <div class="pdf-preview-wrap">
-            <canvas id="pdfPreviewCanvas" class="pdf-preview-canvas" width="420" height="594" aria-label="Anteprima PDF"></canvas>
-          </div>
         </section>
       </section>
 
@@ -251,10 +248,38 @@
     </div>
   </div>
 
-  <script src="app.js?v=pdf5"></script>
+  <script src="app.js?v=pdf7"></script>
   <script>
+    // Aggiornamento automatico PWA: quando apri l'app controlla sempre i file nuovi.
+    // I preferiti restano salvati perché app.js conserva solo parkingFavorites/parkingFavoriteResidents.
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+      let refreshed = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshed) return;
+        refreshed = true;
+        window.location.reload();
+      });
+
+      window.addEventListener('load', async () => {
+        try {
+          const reg = await navigator.serviceWorker.register('./sw.js?v=pdf7');
+          await reg.update();
+
+          if (reg.waiting) {
+            reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+          }
+
+          reg.addEventListener('updatefound', () => {
+            const worker = reg.installing;
+            if (!worker) return;
+            worker.addEventListener('statechange', () => {
+              if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+                worker.postMessage({ type: 'SKIP_WAITING' });
+              }
+            });
+          });
+        } catch (_) {}
+      });
     }
   </script>
 </body>

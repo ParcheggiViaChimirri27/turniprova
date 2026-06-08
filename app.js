@@ -761,7 +761,7 @@ function loadPdfBaseImage(){
       console.error('Immagine base PDF non caricata', err);
       reject(err);
     };
-    img.src = PDF_BASE_IMAGE + '?v=pdf5-' + Date.now();
+    img.src = PDF_BASE_IMAGE + '?v=pdf6';
   });
   return pdfBaseImagePromise;
 }
@@ -837,7 +837,6 @@ function renderPdfControls(){
   const p = periodFromPdfSelect();
   if(label) label.textContent = p ? `${periodDateText(p)}` : 'Nessun periodo selezionato';
   setPdfStatus('');
-  renderPdfPreview();
 }
 function displayPdfName(name){
   return cleanName(name).replace(/\s+-\s+/g,' - ').replace(/\s+/g,' ').trim().toUpperCase();
@@ -918,12 +917,6 @@ async function drawPdfCanvas(canvas, period){
       drawFittedName(ctx, displayPdfName(occ.name), x, nameY, 105, 58);
     }
   });
-}
-async function renderPdfPreview(){
-  const canvas = byId('pdfPreviewCanvas');
-  if(!canvas) return;
-  try{ await drawPdfCanvas(canvas, periodFromPdfSelect()); }
-  catch(err){ console.warn('Anteprima PDF non disponibile', err); }
 }
 function bytesFromDataUrl(dataUrl){
   const b64 = String(dataUrl).split(',')[1] || '';
