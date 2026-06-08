@@ -11,11 +11,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Parcheggi" />
-  <link rel="manifest" href="manifest.webmanifest?v=20" />
-  <link rel="icon" href="icon.svg?v=20" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest?v=pdf1" />
+  <link rel="icon" href="icon.svg?v=pdf1" type="image/svg+xml" />
   <link rel="preload" href="mappa-posti-numeri.webp" as="image" type="image/webp" />
   <link rel="preload" href="via.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="style.css?v=20" />
+  <link rel="stylesheet" href="style.css?v=pdf1" />
+  <link rel="stylesheet" href="mobile_override.css?v=pdf1" />
 </head>
 <body>
   <div class="app-shell">
@@ -28,7 +29,7 @@
         <section class="date-card" aria-label="Selezione data">
           <button id="homePrevPeriodBtn" class="period-btn" type="button">
             <span>Turno precedente</span>
-            <strong>‹</strong>
+            
           </button>
           <label class="date-input-wrap" for="homeDateInput">
             <span>Data</span>
@@ -36,8 +37,8 @@
             <input id="homeDateInput" type="date" />
           </label>
           <button id="homeNextPeriodBtn" class="period-btn" type="button">
-            <span>Prossimo turno</span>
-            <strong>›</strong>
+            <span>Turno Prossimo</span>
+            
           </button>
         </section>
 
@@ -99,9 +100,9 @@
         </header>
 
         <section class="date-card compact-date" aria-label="Selezione data condomino">
-          <button id="residentPrevPeriodBtn" class="period-btn" type="button"><span>Precedente</span><strong>‹</strong></button>
+          <button id="residentPrevPeriodBtn" class="period-btn" type="button"><span>Turno Precedente</span></button>
           <label class="date-input-wrap" for="residentDateInput"><span>Data</span><strong id="residentDateLabel" class="date-display">-</strong><input id="residentDateInput" type="date" /></label>
-          <button id="residentNextPeriodBtn" class="period-btn" type="button"><span>Prossimo</span><strong>›</strong></button>
+          <button id="residentNextPeriodBtn" class="period-btn" type="button"><span>Turno Prossimo</span></button>
         </section>
 
 
@@ -121,9 +122,9 @@
         </header>
 
         <section class="date-card rights-date-card" aria-label="Selezione data lista posti">
-          <button id="rightsPrevPeriodBtn" class="period-btn" type="button"><span>Precedente</span><strong>‹</strong></button>
+          <button id="rightsPrevPeriodBtn" class="period-btn" type="button"><span>Turno Precedente</span></button>
           <label class="date-input-wrap" for="rightsDateInput"><span>Data</span><strong id="rightsDateLabel" class="date-display">-</strong><input id="rightsDateInput" type="date" /></label>
-          <button id="rightsNextPeriodBtn" class="period-btn" type="button"><span>Prossimo</span><strong>›</strong></button>
+          <button id="rightsNextPeriodBtn" class="period-btn" type="button"><span>Turno Prossimo</span></button>
         </section>
 
         <section class="content-card rights-card">
@@ -131,15 +132,41 @@
           <div id="spotRightsList" class="rights-list"></div>
         </section>
       </section>
+
+      <section id="pdfSection" class="page" aria-labelledby="pdfTitle">
+        <header class="hero compact">
+          <img class="header-logo" src="via.webp" alt="VIA B. CHIMIRRI" />
+        </header>
+
+        <section class="date-card pdf-date-card" aria-label="Selezione data PDF">
+          <button id="pdfPrevPeriodBtn" class="period-btn" type="button"><span>Turno Precedente</span></button>
+          <label class="date-input-wrap" for="pdfDateInput"><span>Data</span><strong id="pdfDateLabel" class="date-display">-</strong><input id="pdfDateInput" type="date" /></label>
+          <button id="pdfNextPeriodBtn" class="period-btn" type="button"><span>Turno Prossimo</span></button>
+        </section>
+
+        <section class="content-card pdf-card">
+          <div class="map-head simple"><div><h2 id="pdfTitle">Download PDF</h2><p id="pdfPeriodText">Seleziona un periodo e scarica la planimetria</p></div></div>
+          <div class="pdf-controls">
+            <label class="pdf-select-label" for="pdfPeriodSelect">Periodo</label>
+            <select id="pdfPeriodSelect" class="pdf-period-select"></select>
+            <button id="downloadPdfBtn" class="pdf-download-btn" type="button">Scarica PDF</button>
+            <p id="pdfDownloadStatus" class="pdf-download-status" aria-live="polite"></p>
+          </div>
+          <div class="pdf-preview-wrap">
+            <canvas id="pdfPreviewCanvas" class="pdf-preview-canvas" width="420" height="594" aria-label="Anteprima PDF"></canvas>
+          </div>
+        </section>
+      </section>
+
       <section id="favoritesSection" class="page" aria-labelledby="favoritesTitle">
         <header class="hero compact">
           <img class="header-logo" src="via.webp" alt="VIA B. CHIMIRRI" />
         </header>
 
         <section class="date-card favorites-date-card" aria-label="Selezione data preferiti">
-          <button id="favoritesPrevPeriodBtn" class="period-btn" type="button"><span>Precedente</span><strong>‹</strong></button>
+          <button id="favoritesPrevPeriodBtn" class="period-btn" type="button"><span>Turno Precedente</span></button>
           <label class="date-input-wrap" for="favoritesDateInput"><span>Data</span><strong id="favoritesDateLabel" class="date-display">-</strong><input id="favoritesDateInput" type="date" /></label>
-          <button id="favoritesNextPeriodBtn" class="period-btn" type="button"><span>Prossimo</span><strong>›</strong></button>
+          <button id="favoritesNextPeriodBtn" class="period-btn" type="button"><span>Turno Prossimo</span></button>
         </section>
 
         <section class="favorites-card favorites-page-card" aria-label="Preferiti">
@@ -158,6 +185,7 @@
     <button class="nav-btn active" data-section="homeSection" type="button"><span>🅿️</span><strong>Mappa posti</strong></button>
     <button class="nav-btn" data-section="condominoSection" type="button"><span>👤</span><strong>Condominio</strong></button>
     <button class="nav-btn" data-section="rightsSection" type="button"><span>📋</span><strong>Lista posti</strong></button>
+    <button class="nav-btn" data-section="pdfSection" type="button"><span>📄</span><strong>PDF</strong></button>
     <button class="nav-btn" data-section="favoritesSection" type="button"><span>⭐</span><strong>Preferiti</strong></button>
   </nav>
 
@@ -198,7 +226,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21pdf"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));

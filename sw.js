@@ -1,4 +1,4 @@
-const CACHE_NAME = "parcheggi-mobile-stabile-v20";
+const CACHE_NAME = "parcheggi-pdf-fix-dataurl-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const ASSETS = [
   "./mobile_override.css",
   "./app.js",
   "./mappa-posti-numeri.webp",
+  "./mappa-pdf-base.png",
   "./mappa-posti-numeri.png",
   "./via.webp",
   "./icon.svg",
