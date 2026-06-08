@@ -736,6 +736,7 @@ function forceHomeMapOnOpen(){
 ───────────────────────────────────────────── */
 const PDF_BASE_IMAGE = 'mappa-pdf-base.png';
 const PDF_PAGE = {w:1240, h:1754};
+const PDF_PAGE_A4 = {w:595.28, h:841.89};
 const PDF_COORDS = {
   1:{x:18.7, numberY:9.5}, 2:{x:18.7, numberY:15.3}, 3:{x:18.7, numberY:21.2}, 4:{x:18.7, numberY:27.3}, 5:{x:18.7, numberY:33.0},
   8:{x:18.7, numberY:58.0}, 9:{x:18.7, numberY:64.5}, 10:{x:18.7, numberY:81.2},
@@ -748,6 +749,8 @@ const PDF_COORDS = {
   35:{x:67.7, numberY:76.3}, 36:{x:67.7, numberY:82.1}, 37:{x:67.7, numberY:88.3}
 };
 let pdfSelectedPeriodKey = null;
+let pdfSelectedYear = null;
+let pdfSpecificYear = null;
 let pdfBaseImagePromise = null;
 function loadPdfBaseImage(){
   if(pdfBaseImagePromise) return pdfBaseImagePromise;
@@ -758,37 +761,78 @@ function loadPdfBaseImage(){
       console.error('Immagine base PDF non caricata', err);
       reject(err);
     };
-    img.src = PDF_BASE_IMAGE + '?v=' + Date.now();
+    img.src = PDF_BASE_IMAGE + '?v=pdf5-' + Date.now();
   });
   return pdfBaseImagePromise;
 }
-function pdfAvailablePeriods(){
-  const start = getCycleStartYear(selectedDate);
-  const list = [...buildPeriodsForCycle(start-2), ...buildPeriodsForCycle(start), ...buildPeriodsForCycle(start+2)];
+function pdfPeriodKey(period){ return `${toInputDate(period.start)}_${period.index}_${period.cycleStartYear}`; }
+function pdfAllPeriodsAroundYear(year){
+  year = Number(year);
+  // Il ciclo parte sempre da anni dispari, ma i periodi possono iniziare
+  // sia in anni pari che in anni dispari. Per questo non possiamo usare
+  // year-5/year-3... quando l'anno scelto è dispari: produrrebbe solo anni pari.
+  const cycleStarts = [];
+  for(let y = year - 8; y <= year + 8; y++){
+    if(y % 2 !== 0) cycleStarts.push(y);
+  }
   const seen = new Set();
-  return list.filter(p=>{
+  return cycleStarts.flatMap(buildPeriodsForCycle).filter(p=>{
     const key = `${toInputDate(p.start)}_${toInputDate(p.end)}_${p.main}_${p.small}`;
     if(seen.has(key)) return false;
     seen.add(key);
     return true;
   }).sort((a,b)=>a.start-b.start);
 }
-function pdfPeriodKey(period){ return `${toInputDate(period.start)}_${period.index}_${period.cycleStartYear}`; }
+function pdfPeriodsForYear(year){
+  year = Number(year);
+  return pdfAllPeriodsAroundYear(year).filter(p => p.start.getFullYear() === year);
+}
+function pdfAvailableYears(){
+  const nowYear = new Date().getFullYear();
+  const selectedYear = selectedDate?.getFullYear?.() || nowYear;
+  const min = Math.min(nowYear, selectedYear) - 2;
+  const max = Math.max(nowYear, selectedYear) + 6;
+  return Array.from({length:max-min+1},(_,i)=>min+i);
+}
+function pdfCurrentPeriod(){
+  const today = stripTime(new Date());
+  return findPeriodByDate(today) || findPeriodByDate(skipFree(today, 1));
+}
 function periodFromPdfSelect(){
   const select = byId('pdfPeriodSelect');
-  const periods = pdfAvailablePeriods();
+  const yearSelect = byId('pdfSpecificYearSelect');
+  const year = Number(yearSelect?.value || pdfSpecificYear || new Date().getFullYear());
+  const periods = pdfPeriodsForYear(year);
   const key = select?.value || pdfSelectedPeriodKey;
-  return periods.find(p=>pdfPeriodKey(p)===key) || selectedPeriod || periods[0] || null;
+  return periods.find(p=>pdfPeriodKey(p)===key) || periods[0] || selectedPeriod || null;
+}
+function renderYearSelect(selectId, selected){
+  const select = byId(selectId);
+  if(!select) return null;
+  const years = pdfAvailableYears();
+  const currentYear = Number(selected || select.value || new Date().getFullYear());
+  select.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  select.value = years.includes(currentYear) ? String(currentYear) : String(new Date().getFullYear());
+  return Number(select.value);
 }
 function renderPdfControls(){
+  const current = pdfCurrentPeriod();
+  const selectedYearDefault = pdfSelectedYear || current?.start.getFullYear() || new Date().getFullYear();
+  pdfSelectedYear = renderYearSelect('pdfYearSelect', selectedYearDefault);
+  pdfSpecificYear = renderYearSelect('pdfSpecificYearSelect', pdfSpecificYear || selectedYearDefault);
+
   const select = byId('pdfPeriodSelect');
-  if(!select) return;
-  const periods = pdfAvailablePeriods();
-  const current = selectedPeriod || periods.find(p=>selectedDate>=p.start && selectedDate<=p.end) || periods[0];
-  const wantedKey = pdfSelectedPeriodKey || (current ? pdfPeriodKey(current) : '');
-  select.innerHTML = periods.map(p=>`<option value="${pdfPeriodKey(p)}">${periodDateText(p)} · ${p.main} + ${p.small}</option>`).join('');
-  select.value = periods.some(p=>pdfPeriodKey(p)===wantedKey) ? wantedKey : (current ? pdfPeriodKey(current) : '');
-  pdfSelectedPeriodKey = select.value;
+  if(select){
+    const periods = pdfPeriodsForYear(pdfSpecificYear);
+    const wantedKey = pdfSelectedPeriodKey || (current ? pdfPeriodKey(current) : '');
+    select.innerHTML = periods.map(p=>`<option value="${pdfPeriodKey(p)}">${periodDateText(p)} · ${p.main} + ${p.small}</option>`).join('');
+    select.value = periods.some(p=>pdfPeriodKey(p)===wantedKey) ? wantedKey : (periods[0] ? pdfPeriodKey(periods[0]) : '');
+    pdfSelectedPeriodKey = select.value;
+  }
+
+  const currentText = byId('pdfCurrentPeriodText');
+  if(currentText) currentText.textContent = current ? `${periodDateText(current)} · ${current.main} + ${current.small}` : 'Nessun periodo attuale disponibile';
+
   const label = byId('pdfPeriodText');
   const p = periodFromPdfSelect();
   if(label) label.textContent = p ? `${periodDateText(p)}` : 'Nessun periodo selezionato';
@@ -847,7 +891,7 @@ async function drawPdfCanvas(canvas, period){
   ctx.drawImage(img, 0, 0, W, H);
   ctx.fillStyle = '#071735';
   ctx.textAlign = 'right';
-  const titleX = W - 40;   // 40px dal bordo destro
+  const titleX = W - 40;
   ctx.textBaseline = 'middle';
   ctx.font = '900 34px Arial, sans-serif';
   ctx.fillText('PARCHEGGI VIA B. CHIMIRRI 27', titleX, 66);
@@ -900,28 +944,49 @@ function concatBytes(parts){
   parts.forEach(p=>{ out.set(p, offset); offset += p.length; });
   return out;
 }
-function makePdfFromJpegDataUrl(jpegDataUrl, pageW=595.28, pageH=841.89){
-  const imgBytes = bytesFromDataUrl(jpegDataUrl);
+function makePdfFromJpegDataUrl(jpegDataUrl, pageW=PDF_PAGE_A4.w, pageH=PDF_PAGE_A4.h){
+  return makePdfFromJpegDataUrls([jpegDataUrl], pageW, pageH);
+}
+function makePdfFromJpegDataUrls(jpegDataUrls, pageW=PDF_PAGE_A4.w, pageH=PDF_PAGE_A4.h){
+  const images = jpegDataUrls.map(bytesFromDataUrl);
+  const pageCount = images.length;
   const parts = [];
   const offsets = [];
   let length = 0;
-  const pushAscii = str => { const b = asciiBytes(str); parts.push(b); length += b.length; };
-  const addObj = str => { offsets.push(length); pushAscii(str); };
+  const pushBytes = bytes => { parts.push(bytes); length += bytes.length; };
+  const pushAscii = str => pushBytes(asciiBytes(str));
+  const addObj = (id, body) => { offsets[id] = length; pushAscii(`${id} 0 obj\n${body}\nendobj\n`); };
 
   pushAscii('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
-  addObj('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
-  addObj('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
-  addObj(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`);
-  offsets.push(length);
-  pushAscii(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${PDF_PAGE.w} /Height ${PDF_PAGE.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgBytes.length} >>\nstream\n`);
-  parts.push(imgBytes); length += imgBytes.length;
-  pushAscii('\nendstream\nendobj\n');
-  const content = `q\n${pageW} 0 0 ${pageH} 0 0 cm\n/Im0 Do\nQ\n`;
-  addObj(`5 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
+  const pageIds = Array.from({length:pageCount},(_,i)=>3+i);
+  const imageIds = Array.from({length:pageCount},(_,i)=>3+pageCount+i);
+  const contentIds = Array.from({length:pageCount},(_,i)=>3+(pageCount*2)+i);
+  const size = 3 + pageCount * 3;
+
+  addObj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+  addObj(2, `<< /Type /Pages /Kids [${pageIds.map(id=>`${id} 0 R`).join(' ')}] /Count ${pageCount} >>`);
+
+  for(let i=0;i<pageCount;i++){
+    addObj(pageIds[i], `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /XObject << /Im${i} ${imageIds[i]} 0 R >> >> /Contents ${contentIds[i]} 0 R >>`);
+  }
+
+  for(let i=0;i<pageCount;i++){
+    const imgBytes = images[i];
+    offsets[imageIds[i]] = length;
+    pushAscii(`${imageIds[i]} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${PDF_PAGE.w} /Height ${PDF_PAGE.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgBytes.length} >>\nstream\n`);
+    pushBytes(imgBytes);
+    pushAscii('\nendstream\nendobj\n');
+  }
+
+  for(let i=0;i<pageCount;i++){
+    const content = `q\n${pageW} 0 0 ${pageH} 0 0 cm\n/Im${i} Do\nQ\n`;
+    addObj(contentIds[i], `<< /Length ${content.length} >>\nstream\n${content}endstream`);
+  }
+
   const xrefPos = length;
-  let xref = 'xref\n0 6\n0000000000 65535 f \n';
-  offsets.forEach(o=>{ xref += `${String(o).padStart(10,'0')} 00000 n \n`; });
-  pushAscii(xref + `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
+  let xref = `xref\n0 ${size}\n0000000000 65535 f \n`;
+  for(let id=1; id<size; id++) xref += `${String(offsets[id] || 0).padStart(10,'0')} 00000 n \n`;
+  pushAscii(xref + `trailer\n<< /Size ${size} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
   return new Blob([concatBytes(parts)], {type:'application/pdf'});
 }
 function setPdfStatus(message){
@@ -930,8 +995,6 @@ function setPdfStatus(message){
 }
 async function saveBlob(blob, filename){
   const url = URL.createObjectURL(blob);
-
-  // Download classico. Su desktop scarica subito; su iPhone può aprire il PDF in una nuova scheda.
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
@@ -939,27 +1002,30 @@ async function saveBlob(blob, filename){
   document.body.appendChild(a);
   a.click();
   a.remove();
-
-  // Fallback per iOS/PWA: apre il PDF se il download non parte.
   setTimeout(()=>{
     try{ window.open(url, '_blank', 'noopener'); }catch(_){ }
   }, 350);
-
   setTimeout(()=>URL.revokeObjectURL(url), 30000);
+}
+async function canvasJpegForPeriod(period){
+  const canvas = document.createElement('canvas');
+  await drawPdfCanvas(canvas, period);
+  return canvas.toDataURL('image/jpeg', .96);
+}
+async function downloadPeriodPdf(period, filenamePrefix='parcheggi'){
+  if(!period){ alert('Nessun periodo disponibile.'); return; }
+  const jpeg = await canvasJpegForPeriod(period);
+  const blob = makePdfFromJpegDataUrl(jpeg);
+  const filename = `${filenamePrefix}_${toInputDate(period.start)}_${toInputDate(period.end)}.pdf`;
+  await saveBlob(blob, filename);
 }
 async function downloadSelectedPdf(){
   const btn = byId('downloadPdfBtn');
   try{
     const period = periodFromPdfSelect();
-    if(!period){ alert('Nessun periodo disponibile.'); return; }
     if(btn) btn.disabled = true;
-    setPdfStatus('Creo il PDF...');
-    const canvas = document.createElement('canvas');
-    await drawPdfCanvas(canvas, period);
-    const jpeg = canvas.toDataURL('image/jpeg', .96);
-    const blob = makePdfFromJpegDataUrl(jpeg);
-    const filename = `parcheggi_${toInputDate(period.start)}_${toInputDate(period.end)}.pdf`;
-    await saveBlob(blob, filename);
+    setPdfStatus('Creo il PDF del periodo selezionato...');
+    await downloadPeriodPdf(period, 'parcheggi_periodo');
     setPdfStatus('PDF pronto. Se non parte il download, controlla la scheda/apertura del browser.');
   }catch(err){
     console.error('Errore download PDF', err);
@@ -968,6 +1034,54 @@ async function downloadSelectedPdf(){
   }finally{
     if(btn) btn.disabled = false;
   }
+}
+async function downloadCurrentPdf(){
+  const btn = byId('downloadCurrentPdfBtn');
+  try{
+    const period = pdfCurrentPeriod();
+    if(btn) btn.disabled = true;
+    setPdfStatus('Creo il PDF del periodo attuale...');
+    await downloadPeriodPdf(period, 'parcheggi_attuale');
+    setPdfStatus('PDF periodo attuale pronto.');
+  }catch(err){
+    console.error('Errore download PDF attuale', err);
+    setPdfStatus('Errore: PDF attuale non creato.');
+    alert('Non sono riuscito a creare il PDF attuale: ' + (err && err.message ? err.message : err));
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
+async function downloadYearPdf(){
+  const btn = byId('downloadYearPdfBtn');
+  try{
+    const year = Number(byId('pdfYearSelect')?.value || new Date().getFullYear());
+    const periods = pdfPeriodsForYear(year);
+    if(!periods.length){ alert('Nessun periodo trovato per questo anno.'); return; }
+    if(btn) btn.disabled = true;
+    setPdfStatus(`Creo il PDF anno ${year}: ${periods.length} pagine...`);
+    const jpegs = [];
+    for(let i=0;i<periods.length;i++){
+      setPdfStatus(`Creo pagina ${i+1} di ${periods.length}...`);
+      jpegs.push(await canvasJpegForPeriod(periods[i]));
+    }
+    const blob = makePdfFromJpegDataUrls(jpegs);
+    await saveBlob(blob, `parcheggi_anno_${year}.pdf`);
+    setPdfStatus(`PDF anno ${year} pronto (${periods.length} pagine).`);
+  }catch(err){
+    console.error('Errore download PDF anno', err);
+    setPdfStatus('Errore: PDF annuale non creato.');
+    alert('Non sono riuscito a creare il PDF annuale: ' + (err && err.message ? err.message : err));
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
+function goToPdfCurrentPeriod(){
+  const current = pdfCurrentPeriod();
+  if(!current){ alert('Nessun periodo attuale disponibile.'); return; }
+  pdfSelectedYear = current.start.getFullYear();
+  pdfSpecificYear = current.start.getFullYear();
+  pdfSelectedPeriodKey = pdfPeriodKey(current);
+  renderPdfControls();
 }
 
 function bindEvents(){
@@ -993,6 +1107,16 @@ function bindEvents(){
   byId('gridViewBtn').addEventListener('click',()=>setView('grid')); byId('realViewBtn').addEventListener('click',()=>setView('map'));
   byId('clearFavoritesBtn').addEventListener('click',()=>{ favorites=[]; saveFavorites(); renderFavorites(); renderAllDynamic(); });
   byId('pdfPeriodSelect')?.addEventListener('change', e=>{ pdfSelectedPeriodKey = e.target.value; renderPdfControls(); });
+  byId('pdfSpecificYearSelect')?.addEventListener('change', e=>{ pdfSpecificYear = Number(e.target.value); pdfSelectedPeriodKey = null; renderPdfControls(); });
+  byId('pdfYearSelect')?.addEventListener('change', e=>{
+    pdfSelectedYear = Number(e.target.value);
+    pdfSpecificYear = pdfSelectedYear;
+    pdfSelectedPeriodKey = null;
+    renderPdfControls();
+  });
+  byId('pdfTodayPeriodBtn')?.addEventListener('click', goToPdfCurrentPeriod);
+  byId('downloadCurrentPdfBtn')?.addEventListener('click', downloadCurrentPdf);
+  byId('downloadYearPdfBtn')?.addEventListener('click', downloadYearPdf);
   byId('downloadPdfBtn')?.addEventListener('click', downloadSelectedPdf);
   byId('residentSearchInput').addEventListener('input', ()=>{ closeResidentSuggestions(); renderResidents(); });
   byId('residentSearchInput').addEventListener('focus', closeResidentSuggestions);

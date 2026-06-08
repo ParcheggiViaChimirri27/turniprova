@@ -11,12 +11,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Parcheggi" />
-  <link rel="manifest" href="manifest.webmanifest?v=pdf1" />
-  <link rel="icon" href="icon.svg?v=pdf1" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest?v=pdf4" />
+  <link rel="icon" href="icon.svg?v=pdf4" type="image/svg+xml" />
   <link rel="preload" href="mappa-posti-numeri.webp" as="image" type="image/webp" />
   <link rel="preload" href="via.webp" as="image" type="image/webp" />
-  <link rel="stylesheet" href="style.css?v=pdf1" />
-  <link rel="stylesheet" href="mobile_override.css?v=pdf1" />
+  <link rel="stylesheet" href="style.css?v=pdf4" />
+  <link rel="stylesheet" href="mobile_override.css?v=pdf4" />
 </head>
 <body>
   <div class="app-shell">
@@ -138,18 +138,43 @@
           <img class="header-logo" src="via.webp" alt="VIA B. CHIMIRRI" />
         </header>
 
-        <section class="date-card pdf-date-card" aria-label="Selezione data PDF">
-          <button id="pdfPrevPeriodBtn" class="period-btn" type="button"><span>Turno Precedente</span></button>
-          <label class="date-input-wrap" for="pdfDateInput"><span>Data</span><strong id="pdfDateLabel" class="date-display">-</strong><input id="pdfDateInput" type="date" /></label>
-          <button id="pdfNextPeriodBtn" class="period-btn" type="button"><span>Turno Prossimo</span></button>
-        </section>
+        <section class="content-card pdf-card pdf-card-v4">
+          <div class="map-head simple">
+            <div>
+              <h2 id="pdfTitle">Download PDF</h2>
+              <p id="pdfPeriodText">Periodo selezionato</p>
+            </div>
+          </div>
 
-        <section class="content-card pdf-card">
-          <div class="map-head simple"><div><h2 id="pdfTitle">Download PDF</h2><p id="pdfPeriodText">Seleziona un periodo e scarica la planimetria</p></div></div>
-          <div class="pdf-controls">
-            <label class="pdf-select-label" for="pdfPeriodSelect">Periodo</label>
-            <select id="pdfPeriodSelect" class="pdf-period-select"></select>
-            <button id="downloadPdfBtn" class="pdf-download-btn" type="button">Scarica PDF</button>
+          <div class="pdf-controls pdf-controls-v4">
+            <button id="pdfTodayPeriodBtn" class="pdf-secondary-btn" type="button">Torna al periodo attuale</button>
+
+            <section class="pdf-action-box pdf-current-box">
+              <div class="pdf-action-text">
+                <strong>Periodo attuale</strong>
+                <span id="pdfCurrentPeriodText">Scarica il turno di oggi</span>
+              </div>
+              <button id="downloadCurrentPdfBtn" class="pdf-download-btn" type="button">Scarica periodo attuale</button>
+            </section>
+
+            <section class="pdf-action-box pdf-year-box">
+              <label class="pdf-select-label" for="pdfYearSelect">Scarica anno intero</label>
+              <div class="pdf-inline-controls">
+                <select id="pdfYearSelect" class="pdf-period-select"></select>
+                <button id="downloadYearPdfBtn" class="pdf-download-btn" type="button">Scarica anno</button>
+              </div>
+              <small class="pdf-help">Crea un PDF unico con una pagina per ogni periodo che inizia nell’anno scelto.</small>
+            </section>
+
+            <section class="pdf-action-box pdf-specific-box">
+              <label class="pdf-select-label" for="pdfSpecificYearSelect">Scegli periodo specifico</label>
+              <div class="pdf-inline-controls">
+                <select id="pdfSpecificYearSelect" class="pdf-period-select"></select>
+                <select id="pdfPeriodSelect" class="pdf-period-select pdf-period-select-wide"></select>
+              </div>
+              <button id="downloadPdfBtn" class="pdf-download-btn" type="button">Scarica periodo selezionato</button>
+            </section>
+
             <p id="pdfDownloadStatus" class="pdf-download-status" aria-live="polite"></p>
           </div>
           <div class="pdf-preview-wrap">
@@ -226,7 +251,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=21pdf"></script>
+  <script src="app.js?v=pdf5"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));

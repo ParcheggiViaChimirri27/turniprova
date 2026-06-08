@@ -1,4 +1,4 @@
-const CACHE_NAME = "parcheggi-pdf-fix-dataurl-v2";
+const CACHE_NAME = "parcheggi-pdf-v4-anno-intuitivo";
 const ASSETS = [
   "./",
   "./index.html",
@@ -7,7 +7,6 @@ const ASSETS = [
   "./app.js",
   "./mappa-posti-numeri.webp",
   "./mappa-pdf-base.png",
-  "./mappa-posti-numeri.png",
   "./via.webp",
   "./icon.svg",
   "./manifest.webmanifest"
