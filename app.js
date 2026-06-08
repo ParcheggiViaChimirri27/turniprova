@@ -791,7 +791,7 @@ function renderPdfControls(){
   pdfSelectedPeriodKey = select.value;
   const label = byId('pdfPeriodText');
   const p = periodFromPdfSelect();
-  if(label) label.textContent = p ? `${periodDateText(p)} · Turno ${p.main} · Turnetto ${p.small}` : 'Nessun periodo selezionato';
+  if(label) label.textContent = p ? `${periodDateText(p)}` : 'Nessun periodo selezionato';
   setPdfStatus('');
   renderPdfPreview();
 }
